@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "275966629966",
+    "project_id": "travel-partner-6dee2",
+    "storage_bucket": "travel-partner-6dee2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:275966629966:android:6c877347dbe3f3c0a24b1f",
+        "android_client_info": {
+          "package_name": "com.example.travelpartner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmuDtFU3d1EL61mk44PdH0So-mbQ7ytm0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
