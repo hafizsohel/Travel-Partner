@@ -30,22 +30,12 @@
 
                     <include layout="@layout/menu_toolbar" />
 
-                    <androidx.viewpager.widget.ViewPager
-                        android:id="@+id/viewPager"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/bannerRecyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
-                        tools:itemCount="3"
-                        tools:layout_height="200dp"
-                        tools:layout_width="match_parent" />
-
-                    <LinearLayout
-                        android:id="@+id/indicatorLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:layout_marginBottom="16dp"
-                        android:gravity="center"
-                        android:orientation="horizontal" />
+                        android:orientation="horizontal"
+                        android:scrollbars="none" />
 
                     <GridLayout
                         android:layout_width="match_parent"
@@ -53,8 +43,8 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
                         android:columnCount="3"
-                        android:rowCount="2"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:rowCount="2">
 
                         <LinearLayout
                             android:layout_width="0dp"

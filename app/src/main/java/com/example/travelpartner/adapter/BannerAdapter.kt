@@ -5,39 +5,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.Glide
 import com.example.travelpartner.R
 import com.example.travelpartner.model.Banner
 
-class BannerAdapter(
-    private val context: Context,
-    private val bannerList: List<Banner>
-) : PagerAdapter() {
+class BannerAdapter(private val banners: List<Banner>) : RecyclerView.Adapter<BannerAdapter.BannerViewHolder>() {
 
-    override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val inflater = LayoutInflater.from(context)
-        val view = inflater.inflate(R.layout.item_slide, container, false)
+    inner class BannerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val imageView: ImageView = itemView.findViewById(R.id.banner_image)
+    }
 
-        val imageView = view.findViewById<ImageView>(R.id.banner_image)
-        val banner = bannerList[position]
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_slide, parent, false)
+        return BannerViewHolder(view)
+    }
 
-
-        Glide.with(context)
+    override fun onBindViewHolder(holder: BannerViewHolder, position: Int) {
+        val banner = banners[position]
+        Glide.with(holder.imageView.context)
             .load(banner.imageUrl)
-            .into(imageView)
-
-        container.addView(view)
-        return view
+            .into(holder.imageView)
     }
 
-    override fun getCount(): Int = bannerList.size
-
-    override fun isViewFromObject(view: View, `object`: Any): Boolean {
-        return view == `object`
-    }
-
-    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-        container.removeView(`object` as View)
-    }
+    override fun getItemCount() = banners.size
 }
