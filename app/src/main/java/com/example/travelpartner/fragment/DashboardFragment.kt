@@ -1,5 +1,6 @@
 package com.example.travelpartner.fragment
 
+import PlacesFragment
 import android.os.Bundle
 import android.os.Looper
 import androidx.fragment.app.Fragment
@@ -9,7 +10,6 @@ import android.view.ViewGroup
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
-
 import com.example.travelpartner.adapter.BannerAdapter
 import com.example.travelpartner.databinding.FragmentDashboardBinding
 import com.example.travelpartner.model.Banner
@@ -17,8 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import android.os.Handler
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
-
-
+import com.example.travelpartner.R
 
 class DashboardFragment : Fragment() {
     private lateinit var binding: FragmentDashboardBinding
@@ -45,6 +44,15 @@ class DashboardFragment : Fragment() {
         recyclerView.adapter = adapter
 
         fetchBannersFromFirestore()
+        binding.progressBar.visibility = View.VISIBLE
+
+        binding.btnPlaces.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.FrameLayoutID, PlacesFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
         handler = Handler(Looper.getMainLooper())
         scrollRunnable = object : Runnable {
             override fun run() {
@@ -67,15 +75,15 @@ class DashboardFragment : Fragment() {
     private fun fetchBannersFromFirestore() {
         val db = FirebaseFirestore.getInstance()
         db.collection("Locations").get().addOnSuccessListener { result ->
+            banners.clear()
             for (document in result) {
                 val banner = document.toObject(Banner::class.java)
                 banners.add(banner)
             }
             adapter.notifyDataSetChanged()
-
-
+            binding.progressBar.visibility = View.GONE
         }.addOnFailureListener { exception ->
-            Log.w("DashboardFragment", "Error getting documents: ", exception)
+            binding.progressBar.visibility = View.GONE
         }
     }
 }
