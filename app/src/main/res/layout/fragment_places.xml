@@ -2,96 +2,141 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
         tools:context=".fragment.PlacesFragment">
 
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbarPlaces"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/charcoal"
+            app:title="Beautiful Places"
+            app:titleTextColor="@android:color/white"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:navigationIcon="@drawable/back_button" />
+
         <TextView
             android:id="@+id/headerTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Select Your Location and Destination"
+            android:text="Select Your Destination"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"
             android:gravity="center"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbarPlaces"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <TextView
-            android:id="@+id/locationLabel"
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineCenter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="Choose Location:"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+
+        <TextView
+            android:id="@+id/stateLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:text="Division"
             android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintTop_toBottomOf="@id/headerTitle"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="16dp" />
-
-        <ProgressBar
-            android:id="@+id/locationProgressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintTop_toTopOf="@id/locationSpinner"
-            app:layout_constraintBottom_toBottomOf="@id/locationSpinner"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <Spinner
-            android:id="@+id/locationSpinner"
+            android:id="@+id/stateSpinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:prompt="@string/app_name"
-            app:layout_constraintTop_toBottomOf="@id/locationLabel"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintWidth_percent="0.9" />
-
-        <TextView
-            android:id="@+id/destinationLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="Choose Destination:"
             android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintTop_toBottomOf="@id/locationSpinner"
+            app:layout_constraintTop_toBottomOf="@id/stateLabel"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="16dp" />
-
-        <Spinner
-            android:id="@+id/destinationSpinner"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:prompt="@string/app_name"
-            android:spinnerMode="dialog"
-            app:layout_constraintTop_toBottomOf="@id/destinationLabel"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintWidth_percent="0.9" />
+            app:layout_constraintEnd_toStartOf="@id/guidelineCenter"
+            app:layout_constraintWidth_percent="0.45" />
 
         <TextView
-            android:id="@+id/locationDisplay"
-            android:layout_width="0dp"
+            android:id="@+id/districtLabel"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Current Location: "
+            android:layout_marginStart="16dp"
+            android:text="District"
             android:textColor="@color/black"
             android:textSize="16sp"
-            app:layout_constraintTop_toBottomOf="@id/destinationSpinner"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/headerTitle"
+            app:layout_constraintStart_toEndOf="@id/guidelineCenter" />
+
+
+        <Spinner
+            android:id="@+id/districtSpinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/districtLabel"
+            app:layout_constraintStart_toEndOf="@id/guidelineCenter"
             app:layout_constraintEnd_toEndOf="parent"
-            android:padding="8dp" />
+            app:layout_constraintWidth_percent="0.45" />
+
+
+        <TextView
+            android:id="@+id/upazilaLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:text="Upazila"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@id/stateSpinner"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+        <Spinner
+            android:id="@+id/upazilaSpinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/upazilaLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/guidelineCenter"
+            app:layout_constraintWidth_percent="0.45" />
+
+
+        <TextView
+            android:id="@+id/locationNameLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:text="Location Name"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@id/districtSpinner"
+            app:layout_constraintStart_toEndOf="@id/guidelineCenter" />
+
+        <Spinner
+            android:id="@+id/locationNameSpinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/locationNameLabel"
+            app:layout_constraintStart_toEndOf="@id/guidelineCenter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_percent="0.45" />
 
         <Button
             android:id="@+id/btnSearch"
@@ -100,15 +145,26 @@
             android:layout_marginTop="24dp"
             android:backgroundTint="@color/charcoal"
             android:elevation="4dp"
-            android:paddingHorizontal="32dp"
-            android:paddingVertical="12dp"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp"
             android:text="Search"
             android:textColor="@android:color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.526"
+            app:layout_constraintTop_toBottomOf="@id/upazilaSpinner"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/locationDisplay"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintVertical_bias="0.0" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewPlaces"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            tools:listitem="@layout/address_list"
+            app:layout_constraintTop_toBottomOf="@id/btnSearch"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
