@@ -7,15 +7,15 @@ plugins {
 
 android {
     namespace = "com.example.travelpartner"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
+
         applicationId = "com.example.travelpartner"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -41,7 +41,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -55,9 +54,8 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-
-    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
-    implementation("com.google.firebase:firebase-analytics")
-    implementation ("com.github.bumptech.glide:glide:4.15.1")
-    annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
+    implementation(platform(libs.firebase.bom))
+    implementation ("com.google.firebase:firebase-analytics:22.1.2")
+    implementation (libs.glide)
+    kapt (libs.compiler)
 }

@@ -7,7 +7,7 @@
         android:layout_height="wrap_content"
         android:padding="8dp">
         <ImageView
-            android:id="@+id/imageViewPlace"
+            android:id="@+id/ivLocationImage"
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:scaleType="centerCrop"
@@ -17,7 +17,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textViewLocationName"
+            android:id="@+id/tvLocationName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -26,11 +26,11 @@
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@id/btnLocation"
-            app:layout_constraintStart_toEndOf="@id/imageViewPlace"
-            app:layout_constraintTop_toTopOf="@id/imageViewPlace" />
+            app:layout_constraintStart_toEndOf="@id/ivLocationImage"
+            app:layout_constraintTop_toTopOf="@id/ivLocationImage" />
 
         <TextView
-            android:id="@+id/textViewAddress"
+            android:id="@+id/tvLocationAddress"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -38,8 +38,8 @@
             android:textColor="@android:color/darker_gray"
             android:textSize="14sp"
             app:layout_constraintEnd_toStartOf="@id/btnLocation"
-            app:layout_constraintStart_toEndOf="@id/imageViewPlace"
-            app:layout_constraintTop_toBottomOf="@id/textViewLocationName" />
+            app:layout_constraintStart_toEndOf="@id/ivLocationImage"
+            app:layout_constraintTop_toBottomOf="@id/tvLocationName" />
 
         <ImageButton
             android:id="@+id/btnLocation"
@@ -51,7 +51,7 @@
             android:src="@drawable/place"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/textViewAddress"
+            app:layout_constraintStart_toEndOf="@id/tvLocationAddress"
             app:layout_constraintTop_toTopOf="parent"
             app:tint="@android:color/black" />
     </androidx.constraintlayout.widget.ConstraintLayout>
