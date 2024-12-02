@@ -1,99 +1,102 @@
 package com.example.travelpartner.fragment
 
+import android.R
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.travelpartner.adapter.Location
-import com.example.travelpartner.adapter.LocationAdapter
+import androidx.lifecycle.ViewModelProvider
 import com.example.travelpartner.databinding.FragmentPlacesBinding
-import com.google.firebase.database.*
+import com.example.travelpartner.viewmodel.PlacesViewModel
 
 private const val TAG = "PlacesFragment"
-
 class PlacesFragment : Fragment() {
 
     private lateinit var binding: FragmentPlacesBinding
-    private lateinit var database: DatabaseReference
-    private lateinit var locationAdapter: LocationAdapter
-    private val locationList = mutableListOf<Location>()
+    private lateinit var viewModel: PlacesViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentPlacesBinding.inflate(inflater, container, false)
-        database = FirebaseDatabase.getInstance().getReference("divisions")
+        viewModel = ViewModelProvider(this).get(PlacesViewModel::class.java)
 
-        fetchDivisionNames()
-
-        // Set up the RecyclerView
-        setupRecyclerView()
-
-        // Handle Search Button Click
-        binding.btnSearch.setOnClickListener {
-            val selectedDivision = binding.autoCompleteDivision.text.toString()
-            val selectedDistrict = binding.autoCompleteDistrict.text.toString()
-            val selectedUpazila = binding.autoCompleteUpazila.text.toString()
-            val selectedUnion = binding.autoCompleteUnion.text.toString()
-
-            // For now, just log the selected values
-            Log.d(TAG, "Selected Division: $selectedDivision")
-            Log.d(TAG, "Selected District: $selectedDistrict")
-            Log.d(TAG, "Selected Upazila: $selectedUpazila")
-            Log.d(TAG, "Selected Union: $selectedUnion")
-
-            // You can modify the code here to filter results based on selections
-            // For example, fetch data based on selectedDivision, selectedDistrict, etc.
-        }
+        setupToolbar()
+        setupObservers()
+        setupListeners()
+        viewModel.fetchDivisions()
 
         return binding.root
     }
 
-    private fun setupRecyclerView() {
-        locationAdapter = LocationAdapter(locationList)
-        binding.recyclerViewPlaces.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = locationAdapter
+    private fun setupObservers() {
+        viewModel.divisions.observe(viewLifecycleOwner) { divisions ->
+            setupDropdown(binding.autoCompleteDivision, divisions.map { it.bn_name }) { selected ->
+                val divisionId = divisions.find { it.bn_name == selected }?.id.orEmpty()
+                binding.autoCompleteDistrict.setText("")
+                binding.autoCompleteUpazila.setText("")
+                binding.autoCompleteUnion.setText("")
+                viewModel.fetchDistricts(divisionId)
+            }
+        }
+
+        viewModel.districts.observe(viewLifecycleOwner) { districts ->
+            setupDropdown(binding.autoCompleteDistrict, districts.map { it.bn_name }) { selected ->
+                val districtId = districts.find { it.bn_name == selected }?.id.orEmpty()
+                binding.autoCompleteUpazila.setText("")
+                binding.autoCompleteUnion.setText("")
+                viewModel.fetchUpazilas(districtId)
+            }
+        }
+
+        viewModel.upazilas.observe(viewLifecycleOwner) { upazilas ->
+            setupDropdown(binding.autoCompleteUpazila, upazilas.map { it.bn_name }) { selected ->
+                val upazilaId = upazilas.find { it.bn_name == selected }?.id.orEmpty()
+                binding.autoCompleteUnion.setText("")
+                viewModel.fetchUnions(upazilaId)
+            }
+        }
+
+        viewModel.unions.observe(viewLifecycleOwner) { unions ->
+            setupDropdown(binding.autoCompleteUnion, unions.map { it.bn_name }) { selected ->
+                Log.d(TAG, "Selected Union: $selected")
+            }
+        }
+
+        viewModel.error.observe(viewLifecycleOwner) { error ->
+            Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun fetchDivisionNames() {
-        database.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val divisionNames = mutableListOf<String>()
-                for (divisionSnapshot in snapshot.children) {
-                    val divisionName = divisionSnapshot.child("name").getValue(String::class.java)
-                    divisionName?.let { divisionNames.add(it) }
-                }
-
-                if (divisionNames.isNotEmpty()) {
-                    Log.d(TAG, "Division Names: $divisionNames")
-                    populateSpinner(divisionNames)
-                } else {
-                    //showError("No divisions found")
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                //showError("Error fetching divisions: ${error.message}")
-            }
-        })
+    private fun setupDropdown(
+        dropdown: AutoCompleteTextView,
+        items: List<String>,
+        onItemSelected: (String) -> Unit
+    ) {
+        val adapter = ArrayAdapter(requireContext(), R.layout.simple_spinner_item, items)
+        dropdown.setAdapter(adapter)
+        dropdown.setOnItemClickListener { _, _, position, _ ->
+            onItemSelected(items[position])
+        }
     }
 
-    private fun populateSpinner(divisionNames: List<String>) {
-        val adapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_spinner_item,
-            divisionNames
-        )
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.autoCompleteDivision.setAdapter(adapter)
+    private fun setupListeners() {
+        binding.btnSearch.setOnClickListener {
+
+        }
+    }
+    private fun setupToolbar() {
+        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbarPlaces)
+        binding.toolbarPlaces.setNavigationOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
     }
 }
 

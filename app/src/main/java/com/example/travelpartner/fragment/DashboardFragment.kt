@@ -52,6 +52,13 @@ class DashboardFragment : Fragment() {
                 .commit()
         }
 
+        binding.btnResort.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.FrameLayoutID, ResortsFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
         handler = Handler(Looper.getMainLooper())
         scrollRunnable = object : Runnable {
             override fun run() {
