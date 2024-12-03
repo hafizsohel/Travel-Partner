@@ -16,3 +16,8 @@ data class Union(
     val id: String, val bn_name: String
 )
 
+data class Location(
+    val id:String, val bn_name: String,
+    val img:String
+)
+

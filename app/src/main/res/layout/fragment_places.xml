@@ -6,7 +6,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/ghost_white"
         tools:context=".fragment.PlacesFragment">
 
         <androidx.appcompat.widget.Toolbar
@@ -18,7 +18,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:navigationIcon="@drawable/back_button"
-            app:title="Beautiful Places"
+            app:title="Pathfinder"
             app:titleTextColor="@android:color/white" />
 
         <TextView
@@ -157,6 +157,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="16dp"
+            tools:listitem="@layout/item_location"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

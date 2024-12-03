@@ -58,4 +58,8 @@ dependencies {
     implementation ("com.google.firebase:firebase-analytics:22.1.2")
     implementation (libs.glide)
     kapt (libs.compiler)
+
+    implementation ("com.github.bumptech.glide:glide:4.15.1")
+    kapt ("com.github.bumptech.glide:compiler:4.15.1")
+
 }

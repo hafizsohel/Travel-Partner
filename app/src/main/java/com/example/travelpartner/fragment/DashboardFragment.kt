@@ -15,8 +15,11 @@ import com.example.travelpartner.model.Banner
 import com.google.firebase.firestore.FirebaseFirestore
 import android.os.Handler
 import android.util.Log
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.travelpartner.R
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class DashboardFragment : Fragment() {
     private lateinit var binding: FragmentDashboardBinding
@@ -58,26 +61,28 @@ class DashboardFragment : Fragment() {
                 .addToBackStack(null)
                 .commit()
         }
+        showSlider()
+        return binding.root
+    }
 
-        handler = Handler(Looper.getMainLooper())
-        scrollRunnable = object : Runnable {
-            override fun run() {
+    private fun showSlider() {
+        viewLifecycleOwner.lifecycleScope.launch {
+           while(true) {
                 val position = layoutManager.findFirstVisibleItemPosition()
                 if (position < adapter.itemCount - 1) {
                     recyclerView.smoothScrollToPosition(position + 1)
                 } else {
                     recyclerView.smoothScrollToPosition(0)
                 }
-                handler.postDelayed(this, 3000)
+                delay(5000)
             }
         }
-        handler.postDelayed(scrollRunnable, 3000)
-        return binding.root
     }
 
     private fun openDrawer(drawerLayout: DrawerLayout) {
         drawerLayout.openDrawer(GravityCompat.START)
     }
+
     private fun fetchBannersFromFirestore() {
         val db = FirebaseFirestore.getInstance()
         db.collection("Locations").get().addOnSuccessListener { result ->

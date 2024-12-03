@@ -90,4 +90,19 @@ class PlacesViewModel : ViewModel() {
                 }
             })
     }
+    fun fetchLocations(unionId: String) {
+        database.child("locations").orderByChild("union_id").equalTo(unionId)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val list = snapshot.children.mapNotNull {
+                        Union(it.key.orEmpty(), it.child("bn_name").getValue(String::class.java).orEmpty())
+                    }
+                    _unions.value = list
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    _error.value = "Error fetching locations: ${error.message}"
+                }
+            })
+    }
 }

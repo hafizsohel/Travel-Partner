@@ -1,47 +1,39 @@
 package com.example.travelpartner.adapter
 
-
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.travelpartner.databinding.AddressListBinding
+import com.example.travelpartner.R
+import com.example.travelpartner.model.LocationModel
 
-class Location {
-    val name: String = ""
-    val address: String = ""
-    val imageUrl: String = ""
-}
+class LocationAdapter(private val locations: List<LocationModel>) :
+    RecyclerView.Adapter<LocationAdapter.LocationViewHolder>() {
 
-class LocationAdapter(private val locations: List<Location>) : RecyclerView.Adapter<LocationAdapter.LocationViewHolder>() {
+    class LocationViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val name: TextView = view.findViewById(R.id.textLocationName)
+        val address: TextView = view.findViewById(R.id.textLocationAddress)
+        val image: ImageView = view.findViewById(R.id.imageLocation)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationViewHolder {
-        val binding = AddressListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return LocationViewHolder(binding)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_location, parent, false)
+        return LocationViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: LocationViewHolder, position: Int) {
         val location = locations[position]
-        holder.bind(location)
+        holder.name.text = location.name
+        holder.address.text = location.address
+        Glide.with(holder.image.context)
+            .load(location.imageUrl)
+            .placeholder(R.drawable.placeholder)
+            .into(holder.image)
     }
 
-    override fun getItemCount(): Int {
-        return locations.size
-    }
-
-    inner class LocationViewHolder(private val binding: AddressListBinding) : RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(location: Location) {
-            binding.tvLocationName.text = location.name
-            binding.tvLocationAddress.text = location.address
-            Glide.with(binding.root.context)
-                .load(location.imageUrl)
-                .into(binding.ivLocationImage)
-
-            // Handle item click if needed
-            binding.root.setOnClickListener {
-                // Handle click events if necessary
-            }
-        }
-    }
+    override fun getItemCount(): Int = locations.size
 }
