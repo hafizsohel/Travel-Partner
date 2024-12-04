@@ -26,8 +26,6 @@ class DashboardFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: BannerAdapter
     private lateinit var layoutManager: LinearLayoutManager
-    private lateinit var handler: Handler
-    private lateinit var scrollRunnable: Runnable
     private val banners = mutableListOf<Banner>()
 
     override fun onCreateView(
@@ -58,6 +56,27 @@ class DashboardFragment : Fragment() {
         binding.btnResort.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.FrameLayoutID, ResortsFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
+        binding.btnHotel.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.FrameLayoutID, HotelsFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
+        binding.btnRestaurant.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.FrameLayoutID, RestaurantFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
+        binding.btnCafe.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.FrameLayoutID, CafeFragment())
                 .addToBackStack(null)
                 .commit()
         }
