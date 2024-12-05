@@ -31,7 +31,6 @@ class PlacesFragment : Fragment() {
     private lateinit var viewModel: PlacesViewModel
     private lateinit var adapter: LocationAdapter
     private lateinit var locationViewModel: LocationViewModel
-    private var selectedUpazila: String? = null
     private var selectedUnion: String = "1084"
 
     private val databaseReference: DatabaseReference =

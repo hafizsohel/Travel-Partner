@@ -1,17 +1,18 @@
 package com.example.travelpartner.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import com.example.travelpartner.R
-import com.example.travelpartner.databinding.FragmentPlacesBinding
+import android.widget.ArrayAdapter
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.travelpartner.databinding.FragmentResortsBinding
+import com.example.travelpartner.viewmodel.ResortsViewModel
 
-private lateinit var binding: FragmentResortsBinding
 class ResortsFragment : Fragment() {
+    private lateinit var binding: FragmentResortsBinding
+    private lateinit var viewModel: ResortsViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -19,14 +20,20 @@ class ResortsFragment : Fragment() {
     ): View {
         binding = FragmentResortsBinding.inflate(inflater, container, false)
 
-        setupToolbar()
+        viewModel = ViewModelProvider(this)[ResortsViewModel::class.java]
+        viewModel.districts.observe(viewLifecycleOwner) { districtList ->
+            setupDistrictDropdown(districtList)
+        }
+        viewModel.fetchDistricts()
         return binding.root
     }
 
-    private fun setupToolbar() {
-        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbarResort)
-        binding.toolbarResort.setNavigationOnClickListener {
-            requireActivity().onBackPressedDispatcher.onBackPressed()
-        }
+    private fun setupDistrictDropdown(districts: List<String>) {
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            districts
+        )
+        binding.autoCompleteDistrict.setAdapter(adapter)
     }
 }
