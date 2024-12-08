@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.travelpartner.R
 import com.example.travelpartner.databinding.FragmentHotelsBinding
@@ -22,7 +23,7 @@ class RestaurantFragment : Fragment() {
     ): View? {
 
         binding = FragmentRestaurantBinding.inflate(inflater, container, false)
-
+        setupToolbar()
         viewModel = ViewModelProvider(this)[ResortsViewModel::class.java]
         viewModel.districts.observe(viewLifecycleOwner) { districtList ->
             setupDistrictDropdown(districtList)
@@ -30,6 +31,7 @@ class RestaurantFragment : Fragment() {
         viewModel.fetchDistricts()
         return binding.root
     }
+
     private fun setupDistrictDropdown(districts: List<String>) {
         val adapter = ArrayAdapter(
             requireContext(),
@@ -38,4 +40,11 @@ class RestaurantFragment : Fragment() {
         )
         binding.autoCompleteDistrict.setAdapter(adapter)
     }
+
+    private fun setupToolbar() {
+        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbarRestaurant)
+        binding.toolbarRestaurant.setNavigationOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
     }
+}

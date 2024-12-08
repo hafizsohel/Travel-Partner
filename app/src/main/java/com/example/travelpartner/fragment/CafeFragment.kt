@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.travelpartner.R
 import com.example.travelpartner.databinding.FragmentCafeBinding
@@ -21,7 +22,7 @@ class CafeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentCafeBinding.inflate(inflater, container, false)
-
+        setupToolbar()
         viewModel = ViewModelProvider(this)[ResortsViewModel::class.java]
         viewModel.districts.observe(viewLifecycleOwner) { districtList ->
             setupDistrictDropdown(districtList)
@@ -37,5 +38,11 @@ class CafeFragment : Fragment() {
             districts
         )
         binding.autoCompleteDistrict.setAdapter(adapter)
+    }
+    private fun setupToolbar() {
+        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbarCafe)
+        binding.toolbarCafe.setNavigationOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
     }
 }

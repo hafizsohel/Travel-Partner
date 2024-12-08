@@ -53,6 +53,15 @@
                             android:visibility="gone" />
                     </FrameLayout>
 
+                    <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/indicatorTabLayout"
+                        android:layout_width="4dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        app:tabBackground="@android:color/transparent"
+                        app:tabIndicatorColor="@color/red"
+                        app:tabIndicatorHeight="4dp"
+                        app:tabSelectedTextColor="@android:color/white" />
                     <GridLayout
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
@@ -256,7 +265,7 @@
                         </RelativeLayout>
 
                         <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/placeRec"
+                            android:id="@+id/placeRecyclerView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="7dp"
