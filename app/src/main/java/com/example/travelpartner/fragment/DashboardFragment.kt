@@ -18,11 +18,19 @@ import android.util.Log
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.travelpartner.R
+import com.example.travelpartner.adapter.DestinationAdapter
+import com.example.travelpartner.model.DestinationModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -30,8 +38,11 @@ class DashboardFragment : Fragment() {
     private lateinit var binding: FragmentDashboardBinding
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: BannerAdapter
+    private lateinit var destinationAdapter: DestinationAdapter
     private lateinit var layoutManager: LinearLayoutManager
     private val banners = mutableListOf<Banner>()
+    private val destinationList = mutableListOf<DestinationModel>()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,17 +54,23 @@ class DashboardFragment : Fragment() {
         }
         recyclerView = binding.bannerRecyclerView
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
         recyclerView.layoutManager = layoutManager
         adapter = BannerAdapter(banners)
+
+      // destinationAdapter = DestinationAdapter(context, destinationList = mutableListOf())
+
+        destinationAdapter= DestinationAdapter(requireContext(), destinationList)
+        binding.destinationRecyclerView.layoutManager = GridLayoutManager(context, 2)
+        binding.destinationRecyclerView.adapter = destinationAdapter
+
+
+
         recyclerView.adapter = adapter
-
-        binding.indicatorTabLayout
-        //setupTabIndicators()
+        setupDotsIndicator()
         fetchBannersFromFirestore()
-
-
         binding.progressBar.visibility = View.VISIBLE
-
+        val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
 
         binding.btnPlaces.setOnClickListener {
             parentFragmentManager.beginTransaction()
@@ -120,7 +137,7 @@ class DashboardFragment : Fragment() {
                 } else {
                     recyclerView.smoothScrollToPosition(0)
                 }
-                delay(5000)
+               delay(5000)
             }
         }
     }
@@ -139,76 +156,55 @@ class DashboardFragment : Fragment() {
                 banners.add(banner)
             }
             adapter.notifyDataSetChanged()
+            setupDotsIndicator()
             binding.progressBar.visibility = View.GONE
-            setupTabIndicators()
         }.addOnFailureListener { exception ->
             binding.progressBar.visibility = View.GONE
         }
     }
-    /*private fun setupIndicator() {
-        val slideCount = adapter.itemCount
-        val indicators = Array<ImageView?>(slideCount) { null }
-        var layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
 
+    private fun setupDotsIndicator() {
+        val dotsLayout = binding.indicatorLayout
+        val dotCount = adapter.itemCount
 
-        val selectedIndicatorDrawable = R.drawable.selected_indicator
-        val unselectedIndicatorDrawable = R.drawable.unselected_indicator
-
-        for (i in indicators.indices) {
-            indicators[i] = ImageView(requireContext()).apply {
-                setImageResource(R.drawable.unselected_indicator)
-                layoutParams = layoutParams
-                binding.indicatorTabLayout.addView(this)
+        dotsLayout.removeAllViews()
+        for (i in 0 until dotCount) {
+            val dot = ImageView(requireContext()).apply {
+                setImageResource(if (i == 0) R.drawable.selected_indicator else R.drawable.unselected_indicator)
+                val params = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { setMargins(8, 0, 8, 0) }
+                layoutParams = params
             }
+            dotsLayout.addView(dot)
         }
 
-        setCurrentIndicator(0, indicators)
-
-        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
-                super.onItemRangeChanged(positionStart, itemCount)
-                setCurrentIndicator(positionStart, indicators)
-            }
-        })
-    }
-
-    private fun setCurrentIndicator(position: Int, indicators: Array<ImageView?>) {
-        indicators.forEach { it?.setImageResource(R.drawable.unselected_indicator) }
-        indicators[position]?.setImageResource(R.drawable.selected_indicator)
-    }
-*/
-    private fun setupTabIndicators() {
-        val tabLayout = binding.indicatorTabLayout
-        tabLayout.removeAllTabs()
-
-        // Add tabs programmatically
-        repeat(adapter.itemCount) { index ->
-            val tab = tabLayout.newTab()
-
-            // Set a custom view for each tab (e.g., image or text)
-            val tabView = LayoutInflater.from(requireContext()).inflate(R.layout.see_all_places, null)
-            val imageView = tabView.findViewById<ImageView>(R.id.place_location)
-            // You can set an icon or text for each tab
-            imageView.setImageResource(R.drawable.selected_indicator) // Set an appropriate drawable
-
-            tab.customView = tabView // Set custom view for this tab
-            tabLayout.addTab(tab) // Add the tab to the TabLayout
-        }
-
-        // Optionally set a listener to handle tab selection
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                tab?.let {
-                    binding.bannerRecyclerView.smoothScrollToPosition(it.position)
+        binding.bannerRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                val currentPosition = layoutManager.findFirstVisibleItemPosition()
+                for (i in 0 until dotsLayout.childCount) {
+                    val dot = dotsLayout.getChildAt(i) as ImageView
+                    dot.setImageResource(if (i == currentPosition) R.drawable.selected_indicator else R.drawable.unselected_indicator)
                 }
             }
+        })
+        // Fetch data from Firebase
+        val databaseReference = FirebaseDatabase.getInstance().getReference("locations")
+        databaseReference.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                destinationList.clear()
+                for (dataSnapshot in snapshot.children) {
+                    val place = dataSnapshot.getValue(DestinationModel::class.java)
+                    place?.let { destinationList.add(it) }
+                }
+                destinationAdapter.notifyDataSetChanged()
+            }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(context, "Failed to fetch data", Toast.LENGTH_SHORT).show()
+            }
         })
     }
+    }
 
-}

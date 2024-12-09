@@ -6,7 +6,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/ghost_white">
 
         <androidx.drawerlayout.widget.DrawerLayout
             android:id="@+id/drawer_layer"
@@ -29,7 +29,6 @@
                     android:background="@color/ghost_white"
                     android:gravity="center"
                     android:orientation="vertical">
-
                     <include layout="@layout/menu_toolbar" />
 
                     <FrameLayout
@@ -53,16 +52,18 @@
                             android:visibility="gone" />
                     </FrameLayout>
 
-                    <com.google.android.material.tabs.TabLayout
-                        android:id="@+id/indicatorTabLayout"
-                        android:layout_width="4dp"
+                    <LinearLayout
+                        android:id="@+id/indicatorLayout"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        app:tabBackground="@android:color/transparent"
-                        app:tabIndicatorColor="@color/red"
-                        app:tabIndicatorHeight="4dp"
-                        app:tabSelectedTextColor="@android:color/white" />
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:padding="8dp" />
+
+
+
                     <GridLayout
+                        android:id="@+id/gridLayout"
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
                         android:layout_marginStart="10dp"
@@ -78,22 +79,21 @@
                             android:layout_rowWeight="1"
                             android:layout_columnWeight="1"
                             android:gravity="center"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:padding="8dp">
 
                             <ImageView
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
-                                android:padding="2dp"
-                                android:src="@drawable/place" />
+                                android:src="@drawable/destination" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Places"
+                                android:text="Destination"
                                 android:textAlignment="center"
                                 android:textColor="@color/black"
                                 android:textStyle="bold" />
-
                         </LinearLayout>
 
                         <LinearLayout
@@ -102,14 +102,13 @@
                             android:layout_height="0dp"
                             android:layout_rowWeight="1"
                             android:layout_columnWeight="1"
-                            android:layout_marginStart="8dp"
                             android:gravity="center"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:padding="8dp">
 
                             <ImageView
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
-                                android:padding="2dp"
                                 android:src="@drawable/resort_icon" />
 
                             <TextView
@@ -119,7 +118,6 @@
                                 android:textAlignment="center"
                                 android:textColor="@color/black"
                                 android:textStyle="bold" />
-
                         </LinearLayout>
 
                         <LinearLayout
@@ -128,14 +126,13 @@
                             android:layout_height="0dp"
                             android:layout_rowWeight="1"
                             android:layout_columnWeight="1"
-                            android:layout_marginStart="8dp"
                             android:gravity="center"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:padding="8dp">
 
                             <ImageView
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
-                                android:padding="2dp"
                                 android:src="@drawable/hotel_icon" />
 
                             <TextView
@@ -145,7 +142,6 @@
                                 android:textAlignment="center"
                                 android:textColor="@color/black"
                                 android:textStyle="bold" />
-
                         </LinearLayout>
 
                         <LinearLayout
@@ -154,14 +150,13 @@
                             android:layout_height="0dp"
                             android:layout_rowWeight="1"
                             android:layout_columnWeight="1"
-                            android:layout_marginTop="5dp"
                             android:gravity="center"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:padding="8dp">
 
                             <ImageView
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
-                                android:padding="2dp"
                                 android:src="@drawable/restaurant_icon" />
 
                             <TextView
@@ -171,7 +166,6 @@
                                 android:textAlignment="center"
                                 android:textColor="@color/black"
                                 android:textStyle="bold" />
-
                         </LinearLayout>
 
                         <LinearLayout
@@ -180,15 +174,13 @@
                             android:layout_height="0dp"
                             android:layout_rowWeight="1"
                             android:layout_columnWeight="1"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="5dp"
                             android:gravity="center"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:padding="8dp">
 
                             <ImageView
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
-                                android:padding="2dp"
                                 android:src="@drawable/cafe_icon" />
 
                             <TextView
@@ -198,7 +190,6 @@
                                 android:textAlignment="center"
                                 android:textColor="@color/black"
                                 android:textStyle="bold" />
-
                         </LinearLayout>
 
                         <LinearLayout
@@ -207,15 +198,13 @@
                             android:layout_height="0dp"
                             android:layout_rowWeight="1"
                             android:layout_columnWeight="1"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="5dp"
                             android:gravity="center"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:padding="8dp">
 
                             <ImageView
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
-                                android:padding="2dp"
                                 android:src="@drawable/more" />
 
                             <TextView
@@ -225,10 +214,9 @@
                                 android:textAlignment="center"
                                 android:textColor="@color/black"
                                 android:textStyle="bold" />
-
                         </LinearLayout>
-
                     </GridLayout>
+
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -239,7 +227,7 @@
                         <RelativeLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="3dp"
+                            android:layout_marginTop="5dp"
                             android:background="@color/ghost_white">
 
                             <TextView
@@ -247,9 +235,9 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="9dp"
-                                android:text="Beautiful Places"
+                                android:text="Bangladesh's Beauty :"
                                 android:textColor="@color/black"
-                                android:textSize="21sp"
+                                android:textSize="18sp"
                                 android:textStyle="bold" />
 
                             <TextView
@@ -265,14 +253,14 @@
                         </RelativeLayout>
 
                         <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/placeRecyclerView"
+                            android:id="@+id/destinationRecyclerView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="7dp"
                             android:layout_marginTop="6dp"
                             android:background="@color/ghost_white"
                             android:padding="5dp"
-                            tools:listitem="@layout/see_all_places" />
+                            tools:listitem="@layout/item_destination" />
                     </LinearLayout>
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
