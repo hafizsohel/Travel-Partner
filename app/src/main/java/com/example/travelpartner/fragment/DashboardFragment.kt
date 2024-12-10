@@ -1,5 +1,6 @@
 package com.example.travelpartner.fragment
 
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.os.Looper
 import androidx.fragment.app.Fragment
@@ -15,6 +16,7 @@ import com.example.travelpartner.model.Banner
 import com.google.firebase.firestore.FirebaseFirestore
 import android.os.Handler
 import android.util.Log
+import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -43,6 +45,9 @@ class DashboardFragment : Fragment() {
     private val banners = mutableListOf<Banner>()
     private val destinationList = mutableListOf<DestinationModel>()
 
+    private lateinit var noticeBar: TextView
+    private lateinit var noticeScrollView: HorizontalScrollView
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,21 +57,19 @@ class DashboardFragment : Fragment() {
         binding.btnMenu.setOnClickListener {
             openDrawer(binding.drawerLayer)
         }
+        noticeBar = binding.noticeBar
+        noticeScrollView = binding.noticeScrollView
         recyclerView = binding.bannerRecyclerView
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
         recyclerView.layoutManager = layoutManager
         adapter = BannerAdapter(banners)
 
-      // destinationAdapter = DestinationAdapter(context, destinationList = mutableListOf())
-
         destinationAdapter= DestinationAdapter(requireContext(), destinationList)
         binding.destinationRecyclerView.layoutManager = GridLayoutManager(context, 2)
         binding.destinationRecyclerView.adapter = destinationAdapter
-
-
-
         recyclerView.adapter = adapter
+
         setupDotsIndicator()
         fetchBannersFromFirestore()
         binding.progressBar.visibility = View.VISIBLE
@@ -107,6 +110,13 @@ class DashboardFragment : Fragment() {
                 .commit()
         }
 
+        binding.btnSeeAll.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.FrameLayoutID, SeeLocationFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
         //nav_drawer
         val dashboardLayout = binding.root.findViewById<LinearLayout>(R.id.dashboard_Id)
         val contactLayout = binding.root.findViewById<LinearLayout>(R.id.contact_Id)
@@ -124,7 +134,11 @@ class DashboardFragment : Fragment() {
                 .addToBackStack(null)
                 .commit()
         }
+
         showSlider()
+        duplicateTextContent()
+        noticeScrollView.post { scrollNoticeBar() }
+
         return binding.root
     }
 
@@ -189,6 +203,7 @@ class DashboardFragment : Fragment() {
                 }
             }
         })
+
         // Fetch data from Firebase
         val databaseReference = FirebaseDatabase.getInstance().getReference("locations")
         databaseReference.addValueEventListener(object : ValueEventListener {
@@ -206,5 +221,34 @@ class DashboardFragment : Fragment() {
             }
         })
     }
+    private fun duplicateTextContent() {
+        val textContent = noticeBar.text.toString()
+        noticeBar.text = "$textContent    $textContent"
     }
+
+    private fun scrollNoticeBar() {
+        val scrollWidth = noticeBar.width / 2
+
+        if (scrollWidth > 0) {
+            val animator = ObjectAnimator.ofInt(
+                noticeScrollView,
+                "scrollX",
+                0,
+                scrollWidth
+            ).apply {
+                duration = 15000
+                repeatCount = ObjectAnimator.INFINITE
+                interpolator = null
+                addUpdateListener {
+                    if (noticeScrollView.scrollX >= scrollWidth) {
+                        noticeScrollView.scrollTo(0, 0)
+                    }
+                }
+                start()
+            }
+        } else {
+            noticeScrollView.postDelayed({ scrollNoticeBar() }, 100)
+        }
+    }
+}
 

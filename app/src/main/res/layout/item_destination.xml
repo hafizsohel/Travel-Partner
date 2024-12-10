@@ -15,10 +15,10 @@
 
         <ImageView
             android:id="@+id/destination_image"
-            android:layout_width="100dp"
+            android:layout_width="148dp"
             android:layout_height="80dp"
             android:contentDescription="Place Image"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="6dp"
             android:scaleType="centerCrop"
             android:src="@drawable/placeholder"
             app:layout_constraintEnd_toEndOf="parent"
@@ -34,7 +34,6 @@
             android:textColor="@color/black"
             android:textSize="14sp"
             android:gravity="center"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/destination_image" />
