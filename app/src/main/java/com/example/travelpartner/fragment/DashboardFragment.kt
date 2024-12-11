@@ -2,7 +2,6 @@ package com.example.travelpartner.fragment
 
 import android.animation.ObjectAnimator
 import android.os.Bundle
-import android.os.Looper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,8 +13,6 @@ import com.example.travelpartner.adapter.BannerAdapter
 import com.example.travelpartner.databinding.FragmentDashboardBinding
 import com.example.travelpartner.model.Banner
 import com.google.firebase.firestore.FirebaseFirestore
-import android.os.Handler
-import android.util.Log
 import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -27,8 +24,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.travelpartner.R
 import com.example.travelpartner.adapter.DestinationAdapter
 import com.example.travelpartner.model.DestinationModel
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -65,19 +60,28 @@ class DashboardFragment : Fragment() {
         recyclerView.layoutManager = layoutManager
         adapter = BannerAdapter(banners)
 
-        destinationAdapter= DestinationAdapter(requireContext(), destinationList)
+        destinationAdapter = DestinationAdapter(requireContext(), destinationList)
         binding.destinationRecyclerView.layoutManager = GridLayoutManager(context, 2)
         binding.destinationRecyclerView.adapter = destinationAdapter
         recyclerView.adapter = adapter
 
         setupDotsIndicator()
         fetchBannersFromFirestore()
+        FetchAllLocation ()
         binding.progressBar.visibility = View.VISIBLE
+        binding.progressBar1.visibility = View.VISIBLE
         val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
 
         binding.btnPlaces.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.FrameLayoutID, PlacesFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
+        destinationAdapter.onItemClicked = {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.FrameLayoutID, LocationsDetailFragment())
                 .addToBackStack(null)
                 .commit()
         }
@@ -144,14 +148,14 @@ class DashboardFragment : Fragment() {
 
     private fun showSlider() {
         viewLifecycleOwner.lifecycleScope.launch {
-           while(true) {
+            while (true) {
                 val position = layoutManager.findFirstVisibleItemPosition()
                 if (position < adapter.itemCount - 1) {
                     recyclerView.smoothScrollToPosition(position + 1)
                 } else {
                     recyclerView.smoothScrollToPosition(0)
                 }
-               delay(5000)
+                delay(5000)
             }
         }
     }
@@ -203,24 +207,27 @@ class DashboardFragment : Fragment() {
                 }
             }
         })
-
-        // Fetch data from Firebase
-        val databaseReference = FirebaseDatabase.getInstance().getReference("locations")
-        databaseReference.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                destinationList.clear()
-                for (dataSnapshot in snapshot.children) {
-                    val place = dataSnapshot.getValue(DestinationModel::class.java)
-                    place?.let { destinationList.add(it) }
-                }
-                destinationAdapter.notifyDataSetChanged()
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(context, "Failed to fetch data", Toast.LENGTH_SHORT).show()
-            }
-        })
     }
+        private fun FetchAllLocation (){
+            // Fetch data from Firebase
+            val databaseReference = FirebaseDatabase.getInstance().getReference("locations")
+            databaseReference.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    destinationList.clear()
+                    for (dataSnapshot in snapshot.children) {
+                        val place = dataSnapshot.getValue(DestinationModel::class.java)
+                        place?.let { destinationList.add(it) }
+                    }
+                    binding.progressBar.visibility = View.GONE
+                    destinationAdapter.notifyDataSetChanged()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(context, "Failed to fetch data", Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
     private fun duplicateTextContent() {
         val textContent = noticeBar.text.toString()
         noticeBar.text = "$textContent    $textContent"

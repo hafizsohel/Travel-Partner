@@ -14,13 +14,13 @@ import com.bumptech.glide.Glide
 
 class DestinationAdapter(
     private val context: Context,
-    private val destinationList: List<DestinationModel>
+    private val destinationList: List<DestinationModel>,
 ) : RecyclerView.Adapter<DestinationAdapter.DestinationViewHolder>() {
+    var onItemClicked : ((DestinationModel) ->Unit)? = null
 
     inner class DestinationViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView: ImageView = view.findViewById(R.id.destination_image)
         val titleTextView: TextView = view.findViewById(R.id.destination_title)
-       // val addressTextView: TextView = view.findViewById(R.id.destination_address)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DestinationViewHolder {
@@ -31,8 +31,11 @@ class DestinationAdapter(
     override fun onBindViewHolder(holder: DestinationViewHolder, position: Int) {
         val destination = destinationList[position]
         holder.titleTextView.text = destination.name
-       // holder.addressTextView.text = destination.address
         Glide.with(context).load(destination.imageUrl).into(holder.imageView)
+
+        holder.itemView.setOnClickListener {
+            onItemClicked?.invoke(destination)
+        }
     }
 
     override fun getItemCount(): Int = destinationList.size

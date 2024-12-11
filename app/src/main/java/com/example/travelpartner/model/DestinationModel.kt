@@ -6,4 +6,5 @@ class DestinationModel
       val address: String? = null,
       val bn_name: String? = null,
       val name: String? = null,
-      val imageUrl: String? = null)
+      val imageUrl: String? = null,
+      val bn_desc: String? = null)
