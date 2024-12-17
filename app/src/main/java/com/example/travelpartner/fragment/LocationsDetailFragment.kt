@@ -1,20 +1,22 @@
 package com.example.travelpartner.fragment
 
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.example.travelpartner.adapter.DestinationAdapter
 import com.example.travelpartner.databinding.FragmentLocationsDetailBinding
 import com.example.travelpartner.model.DestinationModel
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 
+private const val TAG = "LocationsDetailFragment"
 class LocationsDetailFragment : Fragment() {
     private lateinit var binding:FragmentLocationsDetailBinding
     private val destinationList = mutableListOf<DestinationModel>()
@@ -25,8 +27,30 @@ class LocationsDetailFragment : Fragment() {
         binding=FragmentLocationsDetailBinding.inflate(layoutInflater)
 
         destinationAdapter= DestinationAdapter(requireContext(), destinationList)
+            destinationAdapter = destinationAdapter
+
+
+        val name = arguments?.getString("name") ?: "No Name"
+        val imageUrl = arguments?.getString("imageUrl") ?: ""
+        val description = arguments?.getString("bn_desc") ?: "No Description"
+        val rating = arguments?.getString("rating") ?: "No Rating"
+        val latitude = arguments?.getString("lat") ?: "No Latitude"
+        val longitude = arguments?.getString("long") ?: "No Longitude"
+
+        binding.placeTitle.text = name
+        binding.placeDescription.text = description
+        binding.placeRating.text = rating
+        Glide.with(requireContext()).load(imageUrl).into(binding.placeImage)
+
+        if (latitude != null && longitude != null) {
+            binding.seeLocation.setOnClickListener {
+                openGoogleMaps(latitude.toDouble(), longitude.toDouble())
+            }
+        } else {
+            Toast.makeText(requireContext(), "Coordinates not available", Toast.LENGTH_SHORT).show()
+        }
+
         setupToolbar()
-        fetchLocationDetails()
         return binding.root
     }
     private fun setupToolbar() {
@@ -34,22 +58,21 @@ class LocationsDetailFragment : Fragment() {
         binding.toolbarDetails.setNavigationOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
+    }
 
-    }
-    private fun fetchLocationDetails(){
-        val databaseReference = FirebaseDatabase.getInstance().getReference("locations")
-        databaseReference.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                destinationList.clear()
-                for (dataSnapshot in snapshot.children) {
-                    val place = dataSnapshot.getValue(DestinationModel::class.java)
-                    place?.let { destinationList.add(it) }
-                }
-                destinationAdapter.notifyDataSetChanged()
+    private fun openGoogleMaps(latitude: Double, longitude: Double) {
+        val gmmIntentUri = Uri.parse("geo:$latitude,$longitude?q=$latitude,$longitude")
+        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+
+        val activities = requireContext().packageManager.queryIntentActivities(mapIntent, 0)
+        if (activities.isNotEmpty()) {
+            for (activity in activities) {
+                Log.d("Maps", "Activity: ${activity.activityInfo.packageName}")
             }
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(context, "Failed to fetch data", Toast.LENGTH_SHORT).show()
-            }
-        })
+            startActivity(mapIntent)
+        } else {
+            Toast.makeText(requireContext(), "No map application found.", Toast.LENGTH_SHORT).show()
+        }
     }
+
 }

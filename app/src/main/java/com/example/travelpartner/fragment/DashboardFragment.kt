@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.travelpartner.R
 import com.example.travelpartner.adapter.DestinationAdapter
+import com.example.travelpartner.application.GridSpacingItemDecoration
 import com.example.travelpartner.model.DestinationModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -61,9 +62,15 @@ class DashboardFragment : Fragment() {
         adapter = BannerAdapter(banners)
 
         destinationAdapter = DestinationAdapter(requireContext(), destinationList)
-        binding.destinationRecyclerView.layoutManager = GridLayoutManager(context, 2)
+        //binding.destinationRecyclerView.layoutManager = GridLayoutManager(context, 2)
         binding.destinationRecyclerView.adapter = destinationAdapter
         recyclerView.adapter = adapter
+
+
+        val padding = resources.getDimensionPixelSize(R.dimen.item_padding)
+        binding.destinationRecyclerView.layoutManager = GridLayoutManager(context, 2)
+        binding.destinationRecyclerView.addItemDecoration(GridSpacingItemDecoration(padding))
+
 
         setupDotsIndicator()
         fetchBannersFromFirestore()
@@ -79,12 +86,26 @@ class DashboardFragment : Fragment() {
                 .commit()
         }
 
-        destinationAdapter.onItemClicked = {
+        destinationAdapter.onItemClicked = { selectedLocation ->
+            val bundle = Bundle().apply {
+                putString("name", selectedLocation.name)
+                putString("imageUrl", selectedLocation.imageUrl)
+                putString("bn_desc", selectedLocation.bn_desc)
+                putString("rating", selectedLocation.rating)
+                putString("lat", selectedLocation.lat)
+                putString("long", selectedLocation.long)
+            }
+
+            val fragment = LocationsDetailFragment().apply {
+                arguments = bundle
+            }
+
             parentFragmentManager.beginTransaction()
-                .replace(R.id.FrameLayoutID, LocationsDetailFragment())
+                .replace(R.id.FrameLayoutID, fragment)
                 .addToBackStack(null)
                 .commit()
         }
+
 
         binding.btnResort.setOnClickListener {
             parentFragmentManager.beginTransaction()
@@ -144,6 +165,8 @@ class DashboardFragment : Fragment() {
         noticeScrollView.post { scrollNoticeBar() }
 
         return binding.root
+
+
     }
 
     private fun showSlider() {
@@ -232,6 +255,9 @@ class DashboardFragment : Fragment() {
         val textContent = noticeBar.text.toString()
         noticeBar.text = "$textContent    $textContent"
     }
+
+
+
 
     private fun scrollNoticeBar() {
         val scrollWidth = noticeBar.width / 2
