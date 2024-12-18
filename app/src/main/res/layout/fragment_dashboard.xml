@@ -82,7 +82,7 @@
                                 android:layout_height="wrap_content"
                                 android:padding="10dp"
                                 android:background="@drawable/notice_bar_background"
-                                android:backgroundTint="@color/black2"
+                                android:backgroundTint="@color/charcoal_light"
                                 android:text="Enjoy exploring the beauty of Bangladesh! Discover destinations, nature, and cultural wonders across the country!"
                                 android:textColor="@color/yellow"
                                 android:textSize="16sp" />
@@ -249,7 +249,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:background="@color/black2">
+                            android:background="@color/charcoal_light">
 
                             <TextView
                                 android:id="@+id/beautiful_place"
@@ -259,8 +259,7 @@
                                 android:text="Bangladesh's Beauty :"
                                 android:textColor="@color/white"
                                 android:textStyle="bold"
-                                android:textSize="18sp"
-                                />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/btnSee_All"
@@ -268,11 +267,10 @@
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentEnd="true"
                                 android:layout_marginEnd="8dp"
-                                android:text="See All.."
+                                android:text="See All"
                                 android:textColor="@color/white"
                                 android:textStyle="bold"
-                                android:textSize="18sp"
-                                />
+                                android:textSize="18sp"/>
                         </RelativeLayout>
 
                             <androidx.recyclerview.widget.RecyclerView
@@ -281,6 +279,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
                                 android:padding="5dp"
+                                android:layout_marginBottom="4dp"
                                 tools:listitem="@layout/item_destination" />
 
                         <ProgressBar
@@ -288,7 +287,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:visibility="gone"
-                            android:layout_gravity="center" />
+                            android:layout_gravity="center"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent" />
                     </LinearLayout>
                 </androidx.core.widget.NestedScrollView>
             </LinearLayout>

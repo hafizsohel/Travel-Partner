@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.travelpartner.R
 import com.example.travelpartner.adapter.DestinationAdapter
+import com.example.travelpartner.utils.GetLocationsHelper
+import com.example.travelpartner.application.GridSpacingItemDecoration
 import com.example.travelpartner.databinding.FragmentSeeLocationBinding
 import com.example.travelpartner.model.DestinationModel
 import com.google.firebase.database.DataSnapshot
@@ -17,6 +19,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
+private const val TAG = "SeeLocationFragment"
 class SeeLocationFragment : Fragment() {
     private lateinit var binding: FragmentSeeLocationBinding
     private val destinationList = mutableListOf<DestinationModel>()
@@ -27,16 +30,34 @@ class SeeLocationFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentSeeLocationBinding.inflate(layoutInflater)
-
-        destinationAdapter= DestinationAdapter(requireContext(), destinationList)
-        binding.locationsRecyclerView.layoutManager = GridLayoutManager(context, 2)
+        destinationAdapter = DestinationAdapter(requireContext(), destinationList)
         binding.locationsRecyclerView.adapter = destinationAdapter
 
-        destinationAdapter.onItemClicked = {
+        val padding = resources.getDimensionPixelSize(R.dimen.item_padding)
+        binding.locationsRecyclerView.layoutManager = GridLayoutManager(context, 2)
+        binding.locationsRecyclerView.addItemDecoration(GridSpacingItemDecoration(padding))
+
+      /*  destinationAdapter.onItemClicked = { selectedLocation ->
+            val bundle = Bundle().apply {
+                putString("name", selectedLocation.name)
+                putString("imageUrl", selectedLocation.imageUrl)
+                putString("bn_desc", selectedLocation.bn_desc)
+                putString("rating", selectedLocation.rating)
+            }
+
+            val fragment = LocationsDetailFragment().apply {
+                arguments = bundle
+            }
+
             parentFragmentManager.beginTransaction()
-                .replace(R.id.FrameLayoutID, LocationsDetailFragment())
+                .replace(R.id.FrameLayoutID, fragment)
                 .addToBackStack(null)
                 .commit()
+        }*/
+
+        destinationAdapter.onItemClicked = { selectedLocation ->
+            // Call the helper method to navigate
+            GetLocationsHelper.navigateToLocationDetailFragment(parentFragmentManager, selectedLocation)
         }
 
         setupToolbar()
@@ -51,12 +72,14 @@ class SeeLocationFragment : Fragment() {
                 }
                 destinationAdapter.notifyDataSetChanged()
             }
+
             override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(context, "Failed to fetch data", Toast.LENGTH_SHORT).show()
             }
         })
         return binding.root
     }
+
     private fun setupToolbar() {
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbarLocation)
         binding.toolbarLocation.setNavigationOnClickListener {

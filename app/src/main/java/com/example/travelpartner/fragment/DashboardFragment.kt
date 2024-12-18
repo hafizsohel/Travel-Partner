@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.travelpartner.R
 import com.example.travelpartner.adapter.DestinationAdapter
+import com.example.travelpartner.utils.GetLocationsHelper
 import com.example.travelpartner.application.GridSpacingItemDecoration
 import com.example.travelpartner.model.DestinationModel
 import com.google.firebase.database.DataSnapshot
@@ -40,7 +41,6 @@ class DashboardFragment : Fragment() {
     private lateinit var layoutManager: LinearLayoutManager
     private val banners = mutableListOf<Banner>()
     private val destinationList = mutableListOf<DestinationModel>()
-
     private lateinit var noticeBar: TextView
     private lateinit var noticeScrollView: HorizontalScrollView
 
@@ -62,19 +62,16 @@ class DashboardFragment : Fragment() {
         adapter = BannerAdapter(banners)
 
         destinationAdapter = DestinationAdapter(requireContext(), destinationList)
-        //binding.destinationRecyclerView.layoutManager = GridLayoutManager(context, 2)
         binding.destinationRecyclerView.adapter = destinationAdapter
         recyclerView.adapter = adapter
-
 
         val padding = resources.getDimensionPixelSize(R.dimen.item_padding)
         binding.destinationRecyclerView.layoutManager = GridLayoutManager(context, 2)
         binding.destinationRecyclerView.addItemDecoration(GridSpacingItemDecoration(padding))
 
-
         setupDotsIndicator()
         fetchBannersFromFirestore()
-        FetchAllLocation ()
+        FetchAllLocation()
         binding.progressBar.visibility = View.VISIBLE
         binding.progressBar1.visibility = View.VISIBLE
         val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
@@ -82,26 +79,6 @@ class DashboardFragment : Fragment() {
         binding.btnPlaces.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.FrameLayoutID, PlacesFragment())
-                .addToBackStack(null)
-                .commit()
-        }
-
-        destinationAdapter.onItemClicked = { selectedLocation ->
-            val bundle = Bundle().apply {
-                putString("name", selectedLocation.name)
-                putString("imageUrl", selectedLocation.imageUrl)
-                putString("bn_desc", selectedLocation.bn_desc)
-                putString("rating", selectedLocation.rating)
-                putString("lat", selectedLocation.lat)
-                putString("long", selectedLocation.long)
-            }
-
-            val fragment = LocationsDetailFragment().apply {
-                arguments = bundle
-            }
-
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.FrameLayoutID, fragment)
                 .addToBackStack(null)
                 .commit()
         }
@@ -155,7 +132,7 @@ class DashboardFragment : Fragment() {
 
         contactLayout.setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.FrameLayoutID, PlacesFragment())
+                .replace(R.id.FrameLayoutID, ContactFragment())
                 .addToBackStack(null)
                 .commit()
         }
@@ -164,9 +141,11 @@ class DashboardFragment : Fragment() {
         duplicateTextContent()
         noticeScrollView.post { scrollNoticeBar() }
 
+        destinationAdapter.onItemClicked = { selectedLocation ->
+            GetLocationsHelper.navigateToLocationDetailFragment(parentFragmentManager, selectedLocation)
+        }
+
         return binding.root
-
-
     }
 
     private fun showSlider() {
@@ -187,7 +166,6 @@ class DashboardFragment : Fragment() {
         drawerLayout.openDrawer(GravityCompat.START)
     }
 
-
     private fun fetchBannersFromFirestore() {
         val db = FirebaseFirestore.getInstance()
         db.collection("Locations").get().addOnSuccessListener { result ->
@@ -207,7 +185,6 @@ class DashboardFragment : Fragment() {
     private fun setupDotsIndicator() {
         val dotsLayout = binding.indicatorLayout
         val dotCount = adapter.itemCount
-
         dotsLayout.removeAllViews()
         for (i in 0 until dotCount) {
             val dot = ImageView(requireContext()).apply {
@@ -231,33 +208,33 @@ class DashboardFragment : Fragment() {
             }
         })
     }
-        private fun FetchAllLocation (){
-            // Fetch data from Firebase
-            val databaseReference = FirebaseDatabase.getInstance().getReference("locations")
-            databaseReference.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    destinationList.clear()
-                    for (dataSnapshot in snapshot.children) {
-                        val place = dataSnapshot.getValue(DestinationModel::class.java)
-                        place?.let { destinationList.add(it) }
-                    }
-                    binding.progressBar.visibility = View.GONE
-                    destinationAdapter.notifyDataSetChanged()
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    binding.progressBar.visibility = View.GONE
-                    Toast.makeText(context, "Failed to fetch data", Toast.LENGTH_SHORT).show()
+    private fun FetchAllLocation() {
+        // Fetch data from Firebase
+        binding.progressBar1.visibility = View.VISIBLE
+        val databaseReference = FirebaseDatabase.getInstance().getReference("locations")
+        databaseReference.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                destinationList.clear()
+                for (dataSnapshot in snapshot.children) {
+                    val place = dataSnapshot.getValue(DestinationModel::class.java)
+                    place?.let { destinationList.add(it) }
                 }
-            })
-        }
+                binding.progressBar1.visibility = View.GONE
+                destinationAdapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                binding.progressBar1.visibility = View.GONE
+                Toast.makeText(context, "Failed to fetch data", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
     private fun duplicateTextContent() {
         val textContent = noticeBar.text.toString()
         noticeBar.text = "$textContent    $textContent"
     }
-
-
-
 
     private fun scrollNoticeBar() {
         val scrollWidth = noticeBar.width / 2
