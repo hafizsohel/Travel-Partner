@@ -14,8 +14,8 @@
             android:layout_width="0dp"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/charcoal"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:navigationIcon="@drawable/back_button"
             app:title="Contact Us"
@@ -42,7 +42,7 @@
                     android:id="@+id/contactTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Contact Information :"
+                    android:text="@string/contact_info"
                     android:textColor="@color/charcoal_light"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -50,67 +50,65 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="8dp">
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/phone"
                         android:layout_gravity="center"
-                        android:layout_marginEnd="8dp" />
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/phone" />
 
                     <TextView
                         android:id="@+id/contactPhone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Phone: +8801773642161"
-                        android:textSize="16sp"
-                        android:textColor="@color/black" />
+                        android:text="@string/phone"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
                 </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/email"
-                    android:layout_gravity="center"
-                    android:layout_marginEnd="8dp" />
-
-
-                <TextView
-                    android:id="@+id/contactEmail"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Email: sohel.hafizurrahman@gmail.com"
-                    android:textSize="16sp" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp">
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/location"
-                    android:layout_gravity="center"
-                    android:layout_marginEnd="8dp" />
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/email" />
 
-                <TextView
-                    android:id="@+id/contactAddress"
+                    <TextView
+                        android:id="@+id/contactEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/email"
+                        android:textSize="16sp" />
+                </LinearLayout>
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Address: Suffix IT, Cha-70, Rupayan Millennium Square, Level# 9A, 70/A Progoti Sharoni, Dhaka 1212"
-                    android:textSize="16sp" />
-            </LinearLayout>
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
 
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/location" />
+
+                    <TextView
+                        android:id="@+id/contactAddress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/address"
+                        android:textSize="16sp" />
+                </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -128,9 +126,9 @@
                 android:id="@+id/buttonCall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"
                 android:backgroundTint="@color/charcoal_light"
-                android:layout_marginTop="16dp"
                 android:text="Call"
                 android:textColor="@android:color/white" />
 
@@ -151,7 +149,6 @@
                 android:backgroundTint="@color/charcoal_light"
                 android:text="View Location"
                 android:textColor="@android:color/white" />
-
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

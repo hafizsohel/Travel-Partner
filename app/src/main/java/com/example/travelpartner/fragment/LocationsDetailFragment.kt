@@ -1,5 +1,6 @@
 package com.example.travelpartner.fragment
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -42,14 +43,32 @@ class LocationsDetailFragment : Fragment() {
         binding.placeRating.text = rating
         Glide.with(requireContext()).load(imageUrl).into(binding.placeImage)
 
-        if (latitude != null && longitude != null) {
-            binding.seeLocation.setOnClickListener {
-                openGoogleMaps(latitude.toDouble(), longitude.toDouble())
-            }
-        } else {
-            Toast.makeText(requireContext(), "Coordinates not available", Toast.LENGTH_SHORT).show()
-        }
+        val locationCoordinates = "Lat: $latitude, Long: $longitude"
+        binding.btnSeeLocation.text = "See Location"
 
+        binding.btnSeeLocation.setOnClickListener {
+            val buttonText = locationCoordinates
+
+            val regex = "Lat:\\s*([\\d.-]+),\\s*Long:\\s*([\\d.-]+)".toRegex()
+            val matchResult = regex.find(buttonText)
+
+            if (matchResult != null) {
+                val latitude = matchResult.groupValues[1]
+                val longitude = matchResult.groupValues[2]
+
+                val locationUri = Uri.parse("geo:$latitude,$longitude?q=$latitude,$longitude($name)")
+
+                try {
+                    val mapIntent = Intent(Intent.ACTION_VIEW, locationUri)
+                    mapIntent.setPackage("com.google.android.apps.maps")
+                    startActivity(mapIntent)
+                } catch (e: ActivityNotFoundException) {
+                    Toast.makeText(requireContext(), "Google Maps is not installed", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(requireContext(), "Invalid location format", Toast.LENGTH_SHORT).show()
+            }
+        }
         setupToolbar()
         return binding.root
     }
@@ -59,20 +78,4 @@ class LocationsDetailFragment : Fragment() {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
     }
-
-    private fun openGoogleMaps(latitude: Double, longitude: Double) {
-        val gmmIntentUri = Uri.parse("geo:$latitude,$longitude?q=$latitude,$longitude")
-        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-
-        val activities = requireContext().packageManager.queryIntentActivities(mapIntent, 0)
-        if (activities.isNotEmpty()) {
-            for (activity in activities) {
-                Log.d("Maps", "Activity: ${activity.activityInfo.packageName}")
-            }
-            startActivity(mapIntent)
-        } else {
-            Toast.makeText(requireContext(), "No map application found.", Toast.LENGTH_SHORT).show()
-        }
-    }
-
 }

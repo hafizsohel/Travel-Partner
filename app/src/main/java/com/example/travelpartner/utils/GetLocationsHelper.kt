@@ -1,11 +1,13 @@
 package com.example.travelpartner.utils
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.FragmentManager
 import com.example.travelpartner.R
 import com.example.travelpartner.fragment.LocationsDetailFragment
 import com.example.travelpartner.model.DestinationModel
 
+private const val TAG = "GetLocationsHelper"
 object GetLocationsHelper {
 
     fun navigateToLocationDetailFragment(fragmentManager: FragmentManager, selectedLocation: DestinationModel) {
