@@ -101,10 +101,11 @@ class PlacesFragment : Fragment() {
                 Toast.makeText(requireContext(), "No locations found", Toast.LENGTH_SHORT).show()
             }
         })
+        locationViewModel.fetchLocations()
 
         binding.btnSearch.setOnClickListener {
             Log.d(TAG, "Button clicked, selectedUnion: $selectedUnion") // Log selectedUnion here
-            locationViewModel.fetchLocations()
+
             Log.d(TAG, "fetchLocations called with selectedUnion: $selectedUnion")
         }
 

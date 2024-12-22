@@ -44,12 +44,12 @@ class ContactFragment : Fragment() {
         }
 
         // Location Button
-        binding.buttonLocation.setOnClickListener {
+     /*   binding.buttonLocation.setOnClickListener {
             val locationUri = Uri.parse("geo:23.784109450114283,90.42554424263183?q=23.784109450114283,90.42554424263183(Suffix+IT)")
             val mapIntent = Intent(Intent.ACTION_VIEW, locationUri)
             mapIntent.setPackage("com.google.android.apps.maps")
             startActivity(mapIntent)
-        }
+        }*/
 
         return binding.root
     }

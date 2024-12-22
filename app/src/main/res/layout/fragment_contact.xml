@@ -140,15 +140,6 @@
                 android:backgroundTint="@color/charcoal_light"
                 android:text="Email"
                 android:textColor="@android:color/white" />
-
-            <Button
-                android:id="@+id/buttonLocation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:backgroundTint="@color/charcoal_light"
-                android:text="View Location"
-                android:textColor="@android:color/white" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
