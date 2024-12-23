@@ -25,7 +25,7 @@ import com.example.travelpartner.R
 import com.example.travelpartner.adapter.DestinationAdapter
 import com.example.travelpartner.utils.GetLocationsHelper
 import com.example.travelpartner.application.GridSpacingItemDecoration
-import com.example.travelpartner.model.DestinationModel
+import com.example.travelpartner.model.LocationModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -40,7 +40,7 @@ class DashboardFragment : Fragment() {
     private lateinit var destinationAdapter: DestinationAdapter
     private lateinit var layoutManager: LinearLayoutManager
     private val banners = mutableListOf<Banner>()
-    private val destinationList = mutableListOf<DestinationModel>()
+    private val destinationList = mutableListOf<LocationModel>()
     private lateinit var noticeBar: TextView
     private lateinit var noticeScrollView: HorizontalScrollView
 
@@ -78,7 +78,7 @@ class DashboardFragment : Fragment() {
 
         binding.btnPlaces.setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.FrameLayoutID, PlacesFragment())
+                .replace(R.id.FrameLayoutID, LocationFragment())
                 .addToBackStack(null)
                 .commit()
         }
@@ -86,14 +86,14 @@ class DashboardFragment : Fragment() {
 
         binding.btnResort.setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.FrameLayoutID, ResortsFragment())
+                .replace(R.id.FrameLayoutID, ResortFragment())
                 .addToBackStack(null)
                 .commit()
         }
 
         binding.btnHotel.setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.FrameLayoutID, HotelsFragment())
+                .replace(R.id.FrameLayoutID, HotelFragment())
                 .addToBackStack(null)
                 .commit()
         }
@@ -217,7 +217,7 @@ class DashboardFragment : Fragment() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 destinationList.clear()
                 for (dataSnapshot in snapshot.children) {
-                    val place = dataSnapshot.getValue(DestinationModel::class.java)
+                    val place = dataSnapshot.getValue(LocationModel::class.java)
                     place?.let { destinationList.add(it) }
                 }
                 binding.progressBar1.visibility = View.GONE

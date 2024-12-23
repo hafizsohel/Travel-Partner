@@ -1,13 +1,13 @@
 package com.example.travelpartner.model
 
-data class LocationModel(
-    val id: String = "",
-    val address: String = "",
-    val name: String = "",
-    val union_id: String = "",
-    val upazila_id: String = "",
-    val imageUrl: String = ""
-)
+class LocationModel
 
-
-
+    ( val id: String? = null,
+      val address: String? = null,
+      val bn_name: String? = null,
+      val name: String? = null,
+      val imageUrl: String? = null,
+      val bn_desc: String? = null,
+      val rating: String? = null,
+      val lat: String? = null,
+      val long: String? = null)

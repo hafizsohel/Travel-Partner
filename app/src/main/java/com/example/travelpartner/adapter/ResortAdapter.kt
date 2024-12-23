@@ -9,13 +9,20 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.travelpartner.R
+import com.example.travelpartner.model.LocationModel
 import com.example.travelpartner.model.ResortModel
 
 class ResortAdapter(
     private val context: Context,
-    private val resortsList: List<ResortModel>,
+    private val resortsList: MutableList<ResortModel>,
 ) : RecyclerView.Adapter<ResortAdapter.ResortViewHolder>() {
     var onItemClicked : ((ResortModel) ->Unit)? = null
+
+    fun updateData(newList: List<ResortModel>) {
+        resortsList.clear()
+        resortsList.addAll(newList)
+        notifyDataSetChanged()
+    }
 
     inner class ResortViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView: ImageView = view.findViewById(R.id.imageLocation)
@@ -30,7 +37,7 @@ class ResortAdapter(
 
     override fun onBindViewHolder(holder: ResortViewHolder, position: Int) {
         val resort = resortsList[position]
-        holder.titleTextView.text = resort.resortName
+        holder.titleTextView.text = resort.name
         holder.addressTextView.text = resort.address
         Glide.with(context).load(resort.imageUrl).into(holder.imageView)
 

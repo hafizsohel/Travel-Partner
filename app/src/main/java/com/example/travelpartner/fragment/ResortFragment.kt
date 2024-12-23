@@ -11,11 +11,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.travelpartner.adapter.LocationAdapter
 import com.example.travelpartner.adapter.ResortAdapter
 import com.example.travelpartner.databinding.FragmentResortsBinding
 import com.example.travelpartner.model.ResortModel
 import com.example.travelpartner.utils.GetLocationsHelper
-import com.example.travelpartner.viewmodel.ResortsViewModel
+import com.example.travelpartner.utils.GetResortsHelper
+import com.example.travelpartner.viewmodel.LocationViewModel
+import com.example.travelpartner.viewmodel.ResortViewModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -23,9 +26,9 @@ import com.google.firebase.database.ValueEventListener
 
 
 private const val TAG = "ResortsFragment"
-class ResortsFragment : Fragment() {
+class ResortFragment : Fragment() {
     private lateinit var binding: FragmentResortsBinding
-    private lateinit var viewModel: ResortsViewModel
+    private lateinit var viewModel: ResortViewModel
     private lateinit var resortAdapter: ResortAdapter
     private val resortList = mutableListOf<ResortModel>()
 
@@ -35,33 +38,30 @@ class ResortsFragment : Fragment() {
     ): View {
         binding = FragmentResortsBinding.inflate(inflater, container, false)
 
-        // Initialize the adapter
         resortAdapter = ResortAdapter(requireContext(), resortList)
-        binding.resortRecyclerView.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = resortAdapter
+        binding.resortRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.resortRecyclerView.adapter = resortAdapter
+
+
+        viewModel = ViewModelProvider(this)[ResortViewModel::class.java]
+        viewModel.resort.observe(viewLifecycleOwner) { resort ->
+            resortAdapter.updateData(resort)
+           // Log.d(TAG, "onCreateView: $resort")
         }
 
-        resortAdapter.onItemClicked = { selectedResort ->
-            val bundle = Bundle().apply {
-
-            }
-            /*   findNavController().navigate(R.id.action_resortListFragment_to_resortDetailsFragment, bundle)
-        }
-
-        destinationAdapter.onItemClicked = { selectedLocation ->
-            GetLocationsHelper.navigateToLocationDetailFragment(parentFragmentManager, selectedLocation)
-        }*/
+        resortAdapter.onItemClicked = { selectedLocation ->
+            GetResortsHelper.navigateToResortDetailFragment(parentFragmentManager, selectedLocation)
+            Log.d(TAG, "onCreateView: $resortList")
         }
 
         setupToolbar()
-        viewModel = ViewModelProvider(this)[ResortsViewModel::class.java]
+       /* viewModel = ViewModelProvider(this)[ResortViewModel::class.java]
         viewModel.districts.observe(viewLifecycleOwner) { districtList ->
             setupDistrictDropdown(districtList)
         }
-        viewModel.fetchDistricts()
+        viewModel.fetchDistricts()*/
 
-        FetchAllResorts()
+       // FetchAllResorts()
         return binding.root
     }
 
@@ -79,8 +79,7 @@ class ResortsFragment : Fragment() {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
     }
-    private fun FetchAllResorts() {
-        // Fetch data from Firebase
+    /*private fun FetchAllResorts() {
         binding.resortProgressBar.visibility = View.VISIBLE
         val databaseReference = FirebaseDatabase.getInstance().getReference("resorts")
         databaseReference.addValueEventListener(object : ValueEventListener {
@@ -95,11 +94,10 @@ class ResortsFragment : Fragment() {
 
                 Log.d(TAG, "onDataChange: $databaseReference")
             }
-
             override fun onCancelled(error: DatabaseError) {
                 binding.resortProgressBar.visibility = View.GONE
                 Toast.makeText(context, "Failed to fetch data", Toast.LENGTH_SHORT).show()
             }
         })
-    }
+    }*/
 }

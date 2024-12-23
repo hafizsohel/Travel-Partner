@@ -1,20 +1,22 @@
 package com.example.travelpartner.viewmodel
 
+import com.example.travelpartner.repository.LocationRepository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.travelpartner.model.LocationModel
-import com.example.travelpartner.repository.LocationRepository
 class LocationViewModel : ViewModel() {
+        private val repository = LocationRepository()
+        private val _destinations = MutableLiveData<List<LocationModel>>()
+        val destinations: LiveData<List<LocationModel>> get() = _destinations
 
-    private val repository = LocationRepository()
-    private val _locations = MutableLiveData<List<LocationModel>>()
-    val locations: LiveData<List<LocationModel>> get() = _locations
+        init {
+            fetchDestinations()
+        }
 
-    fun fetchLocations() {
-        repository.fetchLocations { locationList ->
-            _locations.value = locationList
+        private fun fetchDestinations() {
+            repository.fetchDestinations().observeForever { destinations ->
+                _destinations.value = destinations
+            }
         }
     }
-}
-

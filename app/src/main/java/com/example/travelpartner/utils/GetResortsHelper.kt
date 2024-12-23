@@ -3,23 +3,21 @@ package com.example.travelpartner.utils
 import android.os.Bundle
 import androidx.fragment.app.FragmentManager
 import com.example.travelpartner.R
-import com.example.travelpartner.fragment.LocationDetailFragment
-import com.example.travelpartner.model.LocationModel
+import com.example.travelpartner.fragment.ResortDetailFragment
+import com.example.travelpartner.model.ResortModel
 
-private const val TAG = "GetLocationsHelper"
-object GetLocationsHelper {
-
-    fun navigateToLocationDetailFragment(fragmentManager: FragmentManager, selectedLocation: LocationModel) {
+object GetResortsHelper {
+    fun navigateToResortDetailFragment(fragmentManager: FragmentManager, selectedLocation: ResortModel) {
         val bundle = Bundle().apply {
             putString("name", selectedLocation.name)
             putString("imageUrl", selectedLocation.imageUrl)
+            putString("rating", selectedLocation.starRating)
             putString("bn_desc", selectedLocation.bn_desc)
-            putString("rating", selectedLocation.rating)
-            putString("lat", selectedLocation.lat)
-            putString("long", selectedLocation.long)
+            putString("latitude", selectedLocation.latitude)
+            putString("longitude", selectedLocation.longitude)
         }
 
-        val fragment = LocationDetailFragment().apply {
+        val fragment = ResortDetailFragment().apply {
             arguments = bundle
         }
 

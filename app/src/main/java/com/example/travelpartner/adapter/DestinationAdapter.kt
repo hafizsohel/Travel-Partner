@@ -1,7 +1,7 @@
 package com.example.travelpartner.adapter
 
 import com.example.travelpartner.R
-import com.example.travelpartner.model.DestinationModel
+import com.example.travelpartner.model.LocationModel
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -14,9 +14,9 @@ import com.bumptech.glide.Glide
 
 class DestinationAdapter(
     private val context: Context,
-    private val destinationList: List<DestinationModel>,
+    private val destinationList: List<LocationModel>,
 ) : RecyclerView.Adapter<DestinationAdapter.DestinationViewHolder>() {
-    var onItemClicked : ((DestinationModel) ->Unit)? = null
+    var onItemClicked : ((LocationModel) ->Unit)? = null
 
     inner class DestinationViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView: ImageView = view.findViewById(R.id.destination_image)
@@ -37,6 +37,7 @@ class DestinationAdapter(
             onItemClicked?.invoke(destination)
         }
     }
+
 
     override fun getItemCount(): Int = destinationList.size
 }

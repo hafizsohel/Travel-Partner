@@ -1,37 +1,32 @@
 package com.example.travelpartner.repository
 
-import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.travelpartner.model.LocationModel
 import com.google.firebase.database.*
 
 private const val TAG = "LocationRepository"
 class LocationRepository {
+    private val databaseRef = FirebaseDatabase.getInstance().getReference("locations")
 
-    private val databaseReference: DatabaseReference =
-        FirebaseDatabase.getInstance().getReference("locations")
+    fun fetchDestinations(): LiveData<List<LocationModel>> {
+        val liveData = MutableLiveData<List<LocationModel>>()
 
-    fun fetchLocations(callback: (List<LocationModel>) -> Unit) {
-        databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+        databaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val locationList = mutableListOf<LocationModel>()
-
-                Log.d(TAG, "onDataChange: Snapshot: $snapshot")
-
-                for (locationSnapshot in snapshot.children) {
-                    Log.d(TAG, "onDataChange: Location child snapshot: $locationSnapshot")
-
-                    val location = locationSnapshot.getValue(LocationModel::class.java)
-                    if (location != null) {
-                        locationList.add(location)
-                        Log.d(TAG, "onDataChange: Location: $location")
+                val destinationList = mutableListOf<LocationModel>()
+                snapshot.children.forEach {
+                    val destination = it.getValue(LocationModel::class.java)
+                    if (destination != null) {
+                        destinationList.add(destination)
                     }
                 }
-                callback(locationList)
+                liveData.value = destinationList
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e(TAG, "Error fetching data: ${error.message}")
             }
         })
+        return liveData
     }
 }

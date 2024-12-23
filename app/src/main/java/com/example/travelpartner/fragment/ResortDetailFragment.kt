@@ -11,22 +11,26 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.example.travelpartner.R
 import com.example.travelpartner.adapter.DestinationAdapter
+import com.example.travelpartner.adapter.ResortAdapter
 import com.example.travelpartner.databinding.FragmentLocationsDetailBinding
-import com.example.travelpartner.model.DestinationModel
+import com.example.travelpartner.databinding.FragmentResortDetailBinding
+import com.example.travelpartner.model.LocationModel
+import com.example.travelpartner.model.ResortModel
 
-private const val TAG = "LocationsDetailFragment"
-class LocationsDetailFragment : Fragment() {
-    private lateinit var binding:FragmentLocationsDetailBinding
-    private val destinationList = mutableListOf<DestinationModel>()
-    private lateinit var destinationAdapter: DestinationAdapter
+class ResortDetailFragment : Fragment() {
+
+    private lateinit var binding: FragmentResortDetailBinding
+    private val resortList = mutableListOf<ResortModel>()
+    private lateinit var resortAdapter: ResortAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        binding=FragmentLocationsDetailBinding.inflate(layoutInflater)
+        binding= FragmentResortDetailBinding.inflate(layoutInflater)
 
-        destinationAdapter= DestinationAdapter(requireContext(), destinationList)
-            destinationAdapter = destinationAdapter
+        resortAdapter= ResortAdapter(requireContext(), resortList)
+        resortAdapter = resortAdapter
 
         val name = arguments?.getString("name") ?: "No Name"
         val imageUrl = arguments?.getString("imageUrl") ?: ""
@@ -35,15 +39,15 @@ class LocationsDetailFragment : Fragment() {
         val latitude = arguments?.getString("lat") ?: "No Latitude"
         val longitude = arguments?.getString("long") ?: "No Longitude"
 
-        binding.placeTitle.text = name
-        binding.placeDescription.text = description
+        binding.resortTitle.text = name
+        binding.resortDescription.text = description
         binding.placeRating.text = rating
-        Glide.with(requireContext()).load(imageUrl).into(binding.placeImage)
+        Glide.with(requireContext()).load(imageUrl).into(binding.resortImage)
 
         val locationCoordinates = "Lat: $latitude, Long: $longitude"
-        binding.btnSeeLocation.text = "See Location"
+        binding.btnSeeResortLocation.text = "See Location"
 
-        binding.btnSeeLocation.setOnClickListener {
+        binding.btnSeeResortLocation.setOnClickListener {
             val buttonText = locationCoordinates
             val regex = "Lat:\\s*([\\d.-]+),\\s*Long:\\s*([\\d.-]+)".toRegex()
             val matchResult = regex.find(buttonText)
@@ -69,8 +73,8 @@ class LocationsDetailFragment : Fragment() {
         return binding.root
     }
     private fun setupToolbar() {
-        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbarDetails)
-        binding.toolbarDetails.setNavigationOnClickListener {
+        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbarResortDetails)
+        binding.toolbarResortDetails.setNavigationOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
     }

@@ -13,7 +13,7 @@ import com.example.travelpartner.adapter.DestinationAdapter
 import com.example.travelpartner.utils.GetLocationsHelper
 import com.example.travelpartner.application.GridSpacingItemDecoration
 import com.example.travelpartner.databinding.FragmentSeeLocationBinding
-import com.example.travelpartner.model.DestinationModel
+import com.example.travelpartner.model.LocationModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -22,7 +22,7 @@ import com.google.firebase.database.ValueEventListener
 private const val TAG = "SeeLocationFragment"
 class SeeLocationFragment : Fragment() {
     private lateinit var binding: FragmentSeeLocationBinding
-    private val destinationList = mutableListOf<DestinationModel>()
+    private val destinationList = mutableListOf<LocationModel>()
     private lateinit var destinationAdapter: DestinationAdapter
 
     override fun onCreateView(
@@ -67,7 +67,7 @@ class SeeLocationFragment : Fragment() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 destinationList.clear()
                 for (dataSnapshot in snapshot.children) {
-                    val place = dataSnapshot.getValue(DestinationModel::class.java)
+                    val place = dataSnapshot.getValue(LocationModel::class.java)
                     place?.let { destinationList.add(it) }
                 }
                 destinationAdapter.notifyDataSetChanged()

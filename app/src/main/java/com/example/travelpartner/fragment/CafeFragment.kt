@@ -8,14 +8,12 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.example.travelpartner.R
 import com.example.travelpartner.databinding.FragmentCafeBinding
-import com.example.travelpartner.databinding.FragmentRestaurantBinding
-import com.example.travelpartner.viewmodel.ResortsViewModel
+import com.example.travelpartner.viewmodel.ResortViewModel
 
 class CafeFragment : Fragment() {
     private lateinit var binding: FragmentCafeBinding
-    private lateinit var viewModel: ResortsViewModel
+    private lateinit var viewModel: ResortViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -23,11 +21,11 @@ class CafeFragment : Fragment() {
     ): View? {
         binding = FragmentCafeBinding.inflate(inflater, container, false)
         setupToolbar()
-        viewModel = ViewModelProvider(this)[ResortsViewModel::class.java]
-        viewModel.districts.observe(viewLifecycleOwner) { districtList ->
+        viewModel = ViewModelProvider(this)[ResortViewModel::class.java]
+       /* viewModel.districts.observe(viewLifecycleOwner) { districtList ->
             setupDistrictDropdown(districtList)
-        }
-        viewModel.fetchDistricts()
+        }*/
+        //viewModel.fetchDistricts()
         return binding.root
     }
 
