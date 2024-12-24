@@ -9,7 +9,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.travelpartner.R
-import com.example.travelpartner.model.LocationModel
 import com.example.travelpartner.model.ResortModel
 
 class ResortAdapter(

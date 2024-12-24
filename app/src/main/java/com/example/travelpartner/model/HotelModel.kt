@@ -1,6 +1,6 @@
 package com.example.travelpartner.model
 
-data class ResortModel(
+data class HotelModel(
     val name: String = "",
     val address: String = "",
     val latitude: String = "",
@@ -10,4 +10,3 @@ data class ResortModel(
     val imageUrl: String = "",
     val bn_desc: String = ""
 )
-

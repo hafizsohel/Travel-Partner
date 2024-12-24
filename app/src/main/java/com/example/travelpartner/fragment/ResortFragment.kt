@@ -36,17 +36,15 @@ class ResortFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentResortsBinding.inflate(inflater, container, false)
+        binding = FragmentResortsBinding.inflate(layoutInflater)
 
         resortAdapter = ResortAdapter(requireContext(), resortList)
         binding.resortRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.resortRecyclerView.adapter = resortAdapter
 
-
         viewModel = ViewModelProvider(this)[ResortViewModel::class.java]
         viewModel.resort.observe(viewLifecycleOwner) { resort ->
             resortAdapter.updateData(resort)
-           // Log.d(TAG, "onCreateView: $resort")
         }
 
         resortAdapter.onItemClicked = { selectedLocation ->
@@ -79,25 +77,4 @@ class ResortFragment : Fragment() {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
     }
-    /*private fun FetchAllResorts() {
-        binding.resortProgressBar.visibility = View.VISIBLE
-        val databaseReference = FirebaseDatabase.getInstance().getReference("resorts")
-        databaseReference.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                resortList.clear()
-                for (dataSnapshot in snapshot.children) {
-                    val place = dataSnapshot.getValue(ResortModel::class.java)
-                    place?.let { resortList.add(it) }
-                }
-                binding.resortProgressBar.visibility = View.GONE
-                resortAdapter.notifyDataSetChanged()
-
-                Log.d(TAG, "onDataChange: $databaseReference")
-            }
-            override fun onCancelled(error: DatabaseError) {
-                binding.resortProgressBar.visibility = View.GONE
-                Toast.makeText(context, "Failed to fetch data", Toast.LENGTH_SHORT).show()
-            }
-        })
-    }*/
 }

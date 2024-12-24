@@ -8,25 +8,48 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.travelpartner.adapter.RestaurantAdapter
 import com.example.travelpartner.databinding.FragmentRestaurantBinding
+import com.example.travelpartner.model.ResortModel
+import com.example.travelpartner.model.RestaurantModel
+import com.example.travelpartner.utils.GetRestaurantsHelper
 import com.example.travelpartner.viewmodel.ResortViewModel
+import com.example.travelpartner.viewmodel.RestaurantViewModel
 
 class RestaurantFragment : Fragment() {
     private lateinit var binding: FragmentRestaurantBinding
-    private lateinit var viewModel: ResortViewModel
+    private lateinit var viewModel: RestaurantViewModel
+    private lateinit var restaurantAdapter: RestaurantAdapter
+    private val restaurantList = mutableListOf<RestaurantModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        binding = FragmentRestaurantBinding.inflate(inflater, container, false)
+        binding = FragmentRestaurantBinding.inflate(layoutInflater)
         setupToolbar()
-        viewModel = ViewModelProvider(this)[ResortViewModel::class.java]
-       /* viewModel.districts.observe(viewLifecycleOwner) { districtList ->
-            setupDistrictDropdown(districtList)
-        }*/
-       // viewModel.fetchDistricts()
+        viewModel = ViewModelProvider(this)[RestaurantViewModel::class.java]
+        /* viewModel.districts.observe(viewLifecycleOwner) { districtList ->
+             setupDistrictDropdown(districtList)
+         }*/
+        // viewModel.fetchDistricts()
+        restaurantAdapter = RestaurantAdapter(requireContext(), restaurantList)
+        binding.restaurantRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.restaurantRecyclerView.adapter = restaurantAdapter
+
+
+        viewModel = ViewModelProvider(this)[RestaurantViewModel::class.java]
+        viewModel.restaurant.observe(viewLifecycleOwner) { restaurant ->
+            restaurantAdapter.updateData(restaurant)
+        }
+
+        restaurantAdapter.onItemClicked = { selectedLocation ->
+            GetRestaurantsHelper.navigateToRestaurantDetailFragment(
+                parentFragmentManager,
+                selectedLocation
+            )
+        }
         return binding.root
     }
 
