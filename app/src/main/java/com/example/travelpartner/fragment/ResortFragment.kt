@@ -43,6 +43,10 @@ class ResortFragment : Fragment() {
         binding.resortRecyclerView.adapter = resortAdapter
 
         viewModel = ViewModelProvider(this)[ResortViewModel::class.java]
+
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            toggleProgressBar(isLoading)
+        }
         viewModel.resort.observe(viewLifecycleOwner) { resort ->
             resortAdapter.updateData(resort)
         }
@@ -75,6 +79,15 @@ class ResortFragment : Fragment() {
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbarResort)
         binding.toolbarResort.setNavigationOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+    }
+    private fun toggleProgressBar(isLoading: Boolean) {
+        if (isLoading) {
+            binding.resortProgressBar.visibility = View.VISIBLE
+            binding.resortRecyclerView.visibility = View.GONE
+        } else {
+            binding.resortProgressBar.visibility = View.GONE
+            binding.resortRecyclerView.visibility = View.VISIBLE
         }
     }
 }

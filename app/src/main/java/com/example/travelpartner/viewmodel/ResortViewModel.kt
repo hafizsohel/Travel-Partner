@@ -13,15 +13,19 @@ import com.google.firebase.database.FirebaseDatabase
 class ResortViewModel : ViewModel() {
     private val repository = ResortRepository()
     private val _resort = MutableLiveData<List<ResortModel>>()
+    private val _isLoading = MutableLiveData<Boolean>()
     val resort: LiveData<List<ResortModel>> get() = _resort
+    val isLoading: LiveData<Boolean> get() = _isLoading
 
     init {
         fetchResorts()
     }
 
     private fun fetchResorts() {
-        repository.fetchResorts().observeForever { destinations ->
-            _resort.value = destinations
+        _isLoading.value = true
+        repository.fetchResorts().observeForever { resorts ->
+            _resort.value = resorts
+            _isLoading.postValue(false)
         }
     }
 }

@@ -38,8 +38,11 @@ class RestaurantFragment : Fragment() {
         binding.restaurantRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.restaurantRecyclerView.adapter = restaurantAdapter
 
-
         viewModel = ViewModelProvider(this)[RestaurantViewModel::class.java]
+
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            toggleProgressBar(isLoading)
+        }
         viewModel.restaurant.observe(viewLifecycleOwner) { restaurant ->
             restaurantAdapter.updateData(restaurant)
         }
@@ -66,6 +69,15 @@ class RestaurantFragment : Fragment() {
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbarRestaurant)
         binding.toolbarRestaurant.setNavigationOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+    }
+    private fun toggleProgressBar(isLoading: Boolean) {
+        if (isLoading) {
+            binding.restaurantProgressBar.visibility = View.VISIBLE
+            binding.restaurantRecyclerView.visibility = View.GONE
+        } else {
+            binding.restaurantProgressBar.visibility = View.GONE
+            binding.restaurantRecyclerView.visibility = View.VISIBLE
         }
     }
 }

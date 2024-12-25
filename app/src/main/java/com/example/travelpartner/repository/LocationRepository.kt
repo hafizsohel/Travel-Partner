@@ -1,5 +1,6 @@
 package com.example.travelpartner.repository
 
+import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.travelpartner.model.LocationModel
@@ -11,7 +12,6 @@ class LocationRepository {
 
     fun fetchDestinations(): LiveData<List<LocationModel>> {
         val liveData = MutableLiveData<List<LocationModel>>()
-
         databaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val destinationList = mutableListOf<LocationModel>()

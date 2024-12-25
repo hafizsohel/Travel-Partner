@@ -1,7 +1,6 @@
 package com.example.travelpartner.fragment
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,14 +10,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.travelpartner.adapter.HotelAdapter
-import com.example.travelpartner.adapter.ResortAdapter
 import com.example.travelpartner.databinding.FragmentHotelsBinding
 import com.example.travelpartner.model.HotelModel
-import com.example.travelpartner.model.ResortModel
 import com.example.travelpartner.utils.GetHotelsHelper
-import com.example.travelpartner.utils.GetResortsHelper
 import com.example.travelpartner.viewmodel.HotelViewModel
-import com.example.travelpartner.viewmodel.ResortViewModel
 
 class HotelFragment : Fragment() {
     private lateinit var binding: FragmentHotelsBinding
@@ -40,14 +35,16 @@ class HotelFragment : Fragment() {
 
 
         viewModel = ViewModelProvider(this)[HotelViewModel::class.java]
+
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            toggleProgressBar(isLoading)
+        }
         viewModel.hotel.observe(viewLifecycleOwner) { hotel ->
             hotelAdapter.updateData(hotel)
-            // Log.d(TAG, "onCreateView: $resort")
         }
 
         hotelAdapter.onItemClicked = { selectedLocation ->
             GetHotelsHelper.navigateToHotelDetailFragment(parentFragmentManager, selectedLocation)
-          //  Log.d(TAG, "onCreateView: $hotelList")
         }
 
 
@@ -70,6 +67,15 @@ class HotelFragment : Fragment() {
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbarHotels)
         binding.toolbarHotels.setNavigationOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+    }
+    private fun toggleProgressBar(isLoading: Boolean) {
+        if (isLoading) {
+            binding.hotelProgressBar.visibility = View.VISIBLE
+            binding.hotelRecyclerView.visibility = View.GONE
+        } else {
+            binding.hotelProgressBar.visibility = View.GONE
+            binding.hotelRecyclerView.visibility = View.VISIBLE
         }
     }
 }

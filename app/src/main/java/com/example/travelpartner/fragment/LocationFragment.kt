@@ -30,8 +30,13 @@ class LocationFragment : Fragment() {
         binding.placeRecyclerView.adapter = adapter
 
         viewModel = ViewModelProvider(this)[LocationViewModel::class.java]
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            toggleProgressBar(isLoading)
+        }
+
         viewModel.destinations.observe(viewLifecycleOwner) { destinations ->
             adapter.updateData(destinations)
+
         }
 
         adapter.onItemClicked = { selectedLocation ->
@@ -46,6 +51,15 @@ class LocationFragment : Fragment() {
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbarPlace)
         binding.toolbarPlace.setNavigationOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+    }
+    private fun toggleProgressBar(isLoading: Boolean) {
+        if (isLoading) {
+            binding.locationProgressBar.visibility = View.VISIBLE
+            binding.placeRecyclerView.visibility = View.GONE
+        } else {
+            binding.locationProgressBar.visibility = View.GONE
+            binding.placeRecyclerView.visibility = View.VISIBLE
         }
     }
 }
