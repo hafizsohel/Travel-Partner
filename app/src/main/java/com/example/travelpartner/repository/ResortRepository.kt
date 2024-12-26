@@ -2,7 +2,6 @@ package com.example.travelpartner.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.travelpartner.model.LocationModel
 import com.example.travelpartner.model.ResortModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError

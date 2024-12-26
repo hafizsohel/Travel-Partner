@@ -74,12 +74,11 @@
                 app:layout_constraintStart_toEndOf="@id/restaurantDistrictDropdown"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/searchInput"
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/searchRestaurant"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionSearch"
-                    android:inputType="text" />
+                    android:singleLine="true" />
             </com.google.android.material.textfield.TextInputLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -15,7 +15,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/charcoal"
                 app:navigationIcon="@drawable/back_button"
-                app:title="cafe Overview"
+                app:title="Cafe Overview"
                 app:titleTextColor="@android:color/white"
                 android:layout_alignParentTop="true" />
 

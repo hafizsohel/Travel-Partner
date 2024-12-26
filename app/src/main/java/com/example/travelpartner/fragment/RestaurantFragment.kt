@@ -1,6 +1,8 @@
 package com.example.travelpartner.fragment
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -53,9 +55,20 @@ class RestaurantFragment : Fragment() {
                 selectedLocation
             )
         }
+        setupRestaurant()
         return binding.root
     }
 
+    private fun setupRestaurant() {
+        binding.searchRestaurant.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = charSequence.toString().trim()
+                viewModel.searchRestaurant(query)
+            }
+            override fun afterTextChanged(editable: Editable?) {}
+        })
+    }
     private fun setupDistrictDropdown(districts: List<String>) {
         val adapter = ArrayAdapter(
             requireContext(),

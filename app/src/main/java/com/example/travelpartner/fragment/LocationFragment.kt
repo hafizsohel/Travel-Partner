@@ -1,6 +1,8 @@
 package com.example.travelpartner.fragment
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,9 +44,20 @@ class LocationFragment : Fragment() {
         adapter.onItemClicked = { selectedLocation ->
             GetLocationsHelper.navigateToLocationDetailFragment(parentFragmentManager, selectedLocation)
         }
-
+        setupSearch()
         setupToolbar()
         return binding.root
+    }
+
+    private fun setupSearch() {
+        binding.searchLocations.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = charSequence.toString().trim()
+                viewModel.searchLocation(query)
+            }
+            override fun afterTextChanged(editable: Editable?) {}
+        })
     }
 
     private fun setupToolbar() {
@@ -62,5 +75,6 @@ class LocationFragment : Fragment() {
             binding.placeRecyclerView.visibility = View.VISIBLE
         }
     }
+
 }
 

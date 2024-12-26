@@ -1,6 +1,8 @@
 package com.example.travelpartner.fragment
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -64,6 +66,8 @@ class ResortFragment : Fragment() {
         viewModel.fetchDistricts()*/
 
        // FetchAllResorts()
+
+        setupSearch()
         return binding.root
     }
 
@@ -74,6 +78,19 @@ class ResortFragment : Fragment() {
             districts
         )
         binding.autoCompleteDistrict.setAdapter(adapter)
+    }
+
+
+    private fun setupSearch() {
+        binding.searchResorts.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = charSequence.toString().trim()
+                viewModel.searchResort(query)
+            }
+
+            override fun afterTextChanged(editable: Editable?) {}
+        })
     }
     private fun setupToolbar() {
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbarResort)

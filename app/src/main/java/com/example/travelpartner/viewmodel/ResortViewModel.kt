@@ -13,8 +13,9 @@ import com.google.firebase.database.FirebaseDatabase
 class ResortViewModel : ViewModel() {
     private val repository = ResortRepository()
     private val _resort = MutableLiveData<List<ResortModel>>()
+    private val _filteredResorts = MutableLiveData<List<ResortModel>>()
     private val _isLoading = MutableLiveData<Boolean>()
-    val resort: LiveData<List<ResortModel>> get() = _resort
+    val resort: LiveData<List<ResortModel>> get() = _filteredResorts
     val isLoading: LiveData<Boolean> get() = _isLoading
 
     init {
@@ -25,7 +26,20 @@ class ResortViewModel : ViewModel() {
         _isLoading.value = true
         repository.fetchResorts().observeForever { resorts ->
             _resort.value = resorts
-            _isLoading.postValue(false)
+            _filteredResorts.value = resorts
+            _isLoading.value = false
+        }
+    }
+
+    fun searchResort(query: String) {
+        if (query.isEmpty()) {
+            _filteredResorts.value = _resort.value // Show all resorts if search query is empty
+        } else {
+            // Filter only by name
+            _filteredResorts.value = _resort.value?.filter { resort ->
+                resort.name.contains(query, ignoreCase = true)
+            }
         }
     }
 }
+

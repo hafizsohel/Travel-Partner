@@ -3,6 +3,7 @@ package com.example.travelpartner.utils
 import android.os.Bundle
 import androidx.fragment.app.FragmentManager
 import com.example.travelpartner.R
+import com.example.travelpartner.fragment.CafeDetailFragment
 import com.example.travelpartner.fragment.HotelDetailFragment
 import com.example.travelpartner.model.CafeModel
 import com.example.travelpartner.model.HotelModel
@@ -17,7 +18,7 @@ object GetCafesHelper {
             putString("latitude", selectedLocation.latitude)
             putString("longitude", selectedLocation.longitude)
         }
-        val fragment = HotelDetailFragment().apply {
+        val fragment = CafeDetailFragment().apply {
             arguments = bundle
         }
         fragmentManager.beginTransaction()

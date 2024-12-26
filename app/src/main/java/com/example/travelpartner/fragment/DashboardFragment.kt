@@ -18,6 +18,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +27,7 @@ import com.example.travelpartner.adapter.DestinationAdapter
 import com.example.travelpartner.utils.GetLocationsHelper
 import com.example.travelpartner.application.GridSpacingItemDecoration
 import com.example.travelpartner.model.LocationModel
+import com.example.travelpartner.viewmodel.NoticeViewModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -43,7 +45,7 @@ class DashboardFragment : Fragment() {
     private val destinationList = mutableListOf<LocationModel>()
     private lateinit var noticeBar: TextView
     private lateinit var noticeScrollView: HorizontalScrollView
-
+    private lateinit var noticeViewModel: NoticeViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -82,7 +84,6 @@ class DashboardFragment : Fragment() {
                 .addToBackStack(null)
                 .commit()
         }
-
 
         binding.btnResort.setOnClickListener {
             parentFragmentManager.beginTransaction()
@@ -144,6 +145,10 @@ class DashboardFragment : Fragment() {
         destinationAdapter.onItemClicked = { selectedLocation ->
             GetLocationsHelper.navigateToLocationDetailFragment(parentFragmentManager, selectedLocation)
         }
+        noticeViewModel = ViewModelProvider(this)[NoticeViewModel::class.java]
+        noticeViewModel.notice.observe(viewLifecycleOwner) { notice ->
+            binding.noticeBar.text = notice
+        }
 
         return binding.root
     }
@@ -165,7 +170,6 @@ class DashboardFragment : Fragment() {
     private fun openDrawer(drawerLayout: DrawerLayout) {
         drawerLayout.openDrawer(GravityCompat.START)
     }
-
     private fun fetchBannersFromFirestore() {
         val db = FirebaseFirestore.getInstance()
         db.collection("Locations").get().addOnSuccessListener { result ->
@@ -210,7 +214,6 @@ class DashboardFragment : Fragment() {
     }
 
     private fun FetchAllLocation() {
-        // Fetch data from Firebase
         binding.progressBar1.visibility = View.VISIBLE
         val databaseReference = FirebaseDatabase.getInstance().getReference("locations")
         databaseReference.addValueEventListener(object : ValueEventListener {
@@ -237,27 +240,24 @@ class DashboardFragment : Fragment() {
     }
 
     private fun scrollNoticeBar() {
-        val scrollWidth = noticeBar.width / 2
+        noticeBar.post {
+            val scrollWidth = noticeBar.width - noticeScrollView.width
 
-        if (scrollWidth > 0) {
-            val animator = ObjectAnimator.ofInt(
-                noticeScrollView,
-                "scrollX",
-                0,
-                scrollWidth
-            ).apply {
-                duration = 15000
-                repeatCount = ObjectAnimator.INFINITE
-                interpolator = null
-                addUpdateListener {
-                    if (noticeScrollView.scrollX >= scrollWidth) {
-                        noticeScrollView.scrollTo(0, 0)
-                    }
+            if (scrollWidth > 0) {
+                val animator = ObjectAnimator.ofInt(
+                    noticeScrollView,
+                    "scrollX",
+                    0,
+                    scrollWidth
+                ).apply {
+                    duration = 20000
+                    repeatCount = ObjectAnimator.INFINITE
+                    interpolator = null
+                    start()
                 }
-                start()
+            } else {
+                noticeBar.postDelayed({ scrollNoticeBar() }, 100)
             }
-        } else {
-            noticeScrollView.postDelayed({ scrollNoticeBar() }, 100)
         }
     }
 }

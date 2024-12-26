@@ -1,6 +1,8 @@
 package com.example.travelpartner.fragment
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,8 +14,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.travelpartner.adapter.HotelAdapter
 import com.example.travelpartner.databinding.FragmentHotelsBinding
 import com.example.travelpartner.model.HotelModel
+import com.example.travelpartner.model.LocationModel
 import com.example.travelpartner.utils.GetHotelsHelper
 import com.example.travelpartner.viewmodel.HotelViewModel
+import com.example.travelpartner.viewmodel.PlacesViewModel
 
 class HotelFragment : Fragment() {
     private lateinit var binding: FragmentHotelsBinding
@@ -48,13 +52,28 @@ class HotelFragment : Fragment() {
         }
 
 
-
-       /* viewModel.districts.observe(viewLifecycleOwner) { districtList ->
+/*
+        placesViewModel.districts.observe(viewLifecycleOwner) { districtList ->
             setupDistrictDropdown(districtList)
-        }*/
-       // viewModel.fetchDistricts()
+        }
+        placesViewModel.fetchDistricts()*/
+        setupSearch()
+
+
         return binding.root
     }
+    private fun setupSearch() {
+        binding.searchHotels.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = charSequence.toString().trim()
+                viewModel.searchHotel(query)
+            }
+            override fun afterTextChanged(editable: Editable?) {}
+        })
+    }
+
+
     private fun setupDistrictDropdown(districts: List<String>) {
         val adapter = ArrayAdapter(
             requireContext(),
