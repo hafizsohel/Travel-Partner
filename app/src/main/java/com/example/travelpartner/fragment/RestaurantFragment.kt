@@ -13,10 +13,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.travelpartner.adapter.RestaurantAdapter
 import com.example.travelpartner.databinding.FragmentRestaurantBinding
-import com.example.travelpartner.model.ResortModel
 import com.example.travelpartner.model.RestaurantModel
 import com.example.travelpartner.utils.GetRestaurantsHelper
-import com.example.travelpartner.viewmodel.ResortViewModel
 import com.example.travelpartner.viewmodel.RestaurantViewModel
 
 class RestaurantFragment : Fragment() {
@@ -32,10 +30,6 @@ class RestaurantFragment : Fragment() {
         binding = FragmentRestaurantBinding.inflate(layoutInflater)
         setupToolbar()
         viewModel = ViewModelProvider(this)[RestaurantViewModel::class.java]
-        /* viewModel.districts.observe(viewLifecycleOwner) { districtList ->
-             setupDistrictDropdown(districtList)
-         }*/
-        // viewModel.fetchDistricts()
         restaurantAdapter = RestaurantAdapter(requireContext(), restaurantList)
         binding.restaurantRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.restaurantRecyclerView.adapter = restaurantAdapter
@@ -45,8 +39,12 @@ class RestaurantFragment : Fragment() {
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             toggleProgressBar(isLoading)
         }
-        viewModel.restaurant.observe(viewLifecycleOwner) { restaurant ->
+        viewModel.filteredRestaurant.observe(viewLifecycleOwner) { restaurant ->
             restaurantAdapter.updateData(restaurant)
+        }
+
+        viewModel.districts.observe(viewLifecycleOwner) { districts ->
+            setupDistrictDropdown(districts)
         }
 
         restaurantAdapter.onItemClicked = { selectedLocation ->
@@ -58,13 +56,13 @@ class RestaurantFragment : Fragment() {
         setupRestaurant()
         return binding.root
     }
-
     private fun setupRestaurant() {
         binding.searchRestaurant.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
                 val query = charSequence.toString().trim()
                 viewModel.searchRestaurant(query)
+                binding.autoCompleteDistrict.text.clear()
             }
             override fun afterTextChanged(editable: Editable?) {}
         })
@@ -76,6 +74,14 @@ class RestaurantFragment : Fragment() {
             districts
         )
         binding.autoCompleteDistrict.setAdapter(adapter)
+
+        binding.autoCompleteDistrict.setOnItemClickListener { _, _, position, _ ->
+            val selectedDistrict = adapter.getItem(position)
+            selectedDistrict?.let {
+                viewModel.filterRestaurantsByDistrict(it)
+                binding.searchRestaurant.text?.clear()
+            }
+        }
     }
 
     private fun setupToolbar() {

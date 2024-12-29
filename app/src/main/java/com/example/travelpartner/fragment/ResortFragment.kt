@@ -1,3 +1,4 @@
+/*
 package com.example.travelpartner.fragment
 
 import android.os.Bundle
@@ -59,13 +60,7 @@ class ResortFragment : Fragment() {
         }
 
         setupToolbar()
-       /* viewModel = ViewModelProvider(this)[ResortViewModel::class.java]
-        viewModel.districts.observe(viewLifecycleOwner) { districtList ->
-            setupDistrictDropdown(districtList)
-        }
-        viewModel.fetchDistricts()*/
 
-       // FetchAllResorts()
 
         setupSearch()
         return binding.root
@@ -106,5 +101,102 @@ class ResortFragment : Fragment() {
             binding.resortProgressBar.visibility = View.GONE
             binding.resortRecyclerView.visibility = View.VISIBLE
         }
+    }
+}*/
+package com.example.travelpartner.fragment
+
+import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.travelpartner.adapter.ResortAdapter
+import com.example.travelpartner.databinding.FragmentResortsBinding
+import com.example.travelpartner.utils.GetResortsHelper
+import com.example.travelpartner.viewmodel.ResortViewModel
+
+private const val TAG = "ResortsFragment"
+
+class ResortFragment : Fragment() {
+    private lateinit var binding: FragmentResortsBinding
+    private lateinit var viewModel: ResortViewModel
+    private lateinit var resortAdapter: ResortAdapter
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentResortsBinding.inflate(layoutInflater)
+
+        resortAdapter = ResortAdapter(requireContext(), mutableListOf())
+        binding.resortRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.resortRecyclerView.adapter = resortAdapter
+
+        viewModel = ViewModelProvider(this)[ResortViewModel::class.java]
+
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            toggleProgressBar(isLoading)
+        }
+        viewModel.filteredResorts.observe(viewLifecycleOwner) { resorts ->
+            resortAdapter.updateData(resorts)
+        }
+        viewModel.districts.observe(viewLifecycleOwner) { districts ->
+            setupDistrictDropdown(districts)
+        }
+        resortAdapter.onItemClicked = { selectedLocation ->
+            GetResortsHelper.navigateToResortDetailFragment(parentFragmentManager, selectedLocation)
+        }
+        setupSearch()
+        setupToolbar()
+        return binding.root
+    }
+    private fun setupSearch() {
+        binding.searchResorts.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = charSequence.toString().trim()
+                viewModel.searchResort(query)
+                binding.autoCompleteDistrict.text.clear()
+            }
+
+            override fun afterTextChanged(editable: Editable?) {}
+        })
+    }
+
+    private fun setupDistrictDropdown(districts: List<String>) {
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            districts
+        )
+        binding.autoCompleteDistrict.setAdapter(adapter)
+
+        binding.autoCompleteDistrict.setOnItemClickListener { _, _, position, _ ->
+            val selectedDistrict = adapter.getItem(position)
+            selectedDistrict?.let {
+                Log.d(TAG, "Selected District: $it")
+                viewModel.filterResortsByDistrict(it)
+                binding.searchResorts.text?.clear()
+            }
+        }
+    }
+
+    private fun setupToolbar() {
+        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbarResort)
+        binding.toolbarResort.setNavigationOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+    }
+
+    private fun toggleProgressBar(isLoading: Boolean) {
+        binding.resortProgressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        binding.resortRecyclerView.visibility = if (isLoading) View.GONE else View.VISIBLE
     }
 }

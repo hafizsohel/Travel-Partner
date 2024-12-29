@@ -14,10 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.travelpartner.adapter.HotelAdapter
 import com.example.travelpartner.databinding.FragmentHotelsBinding
 import com.example.travelpartner.model.HotelModel
-import com.example.travelpartner.model.LocationModel
 import com.example.travelpartner.utils.GetHotelsHelper
 import com.example.travelpartner.viewmodel.HotelViewModel
-import com.example.travelpartner.viewmodel.PlacesViewModel
 
 class HotelFragment : Fragment() {
     private lateinit var binding: FragmentHotelsBinding
@@ -43,36 +41,46 @@ class HotelFragment : Fragment() {
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             toggleProgressBar(isLoading)
         }
-        viewModel.hotel.observe(viewLifecycleOwner) { hotel ->
-            hotelAdapter.updateData(hotel)
-        }
 
         hotelAdapter.onItemClicked = { selectedLocation ->
             GetHotelsHelper.navigateToHotelDetailFragment(parentFragmentManager, selectedLocation)
         }
 
-
-/*
-        placesViewModel.districts.observe(viewLifecycleOwner) { districtList ->
-            setupDistrictDropdown(districtList)
+        viewModel.filteredHotel.observe(viewLifecycleOwner) { hotels ->
+            hotelAdapter.updateData(hotels)
         }
-        placesViewModel.fetchDistricts()*/
+
+        viewModel.districts.observe(viewLifecycleOwner) { districts ->
+            setupDistrictDropdown(districts)
+        }
         setupSearch()
-
-
         return binding.root
     }
+
     private fun setupSearch() {
         binding.searchHotels.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+            override fun beforeTextChanged(
+                charSequence: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+            }
+
+            override fun onTextChanged(
+                charSequence: CharSequence?,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
                 val query = charSequence.toString().trim()
                 viewModel.searchHotel(query)
+                binding.autoCompleteDistrict.text.clear()
             }
+
             override fun afterTextChanged(editable: Editable?) {}
         })
     }
-
 
     private fun setupDistrictDropdown(districts: List<String>) {
         val adapter = ArrayAdapter(
@@ -81,13 +89,23 @@ class HotelFragment : Fragment() {
             districts
         )
         binding.autoCompleteDistrict.setAdapter(adapter)
+
+        binding.autoCompleteDistrict.setOnItemClickListener { _, _, position, _ ->
+            val selectedDistrict = adapter.getItem(position)
+            selectedDistrict?.let {
+                viewModel.filterHotelsByDistrict(it)
+                binding.searchHotels.text?.clear()
+            }
+        }
     }
+
     private fun setupToolbar() {
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbarHotels)
         binding.toolbarHotels.setNavigationOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
     }
+
     private fun toggleProgressBar(isLoading: Boolean) {
         if (isLoading) {
             binding.hotelProgressBar.visibility = View.VISIBLE

@@ -3,9 +3,11 @@ package com.example.travelpartner.fragment
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -32,17 +34,21 @@ class LocationFragment : Fragment() {
         binding.placeRecyclerView.adapter = adapter
 
         viewModel = ViewModelProvider(this)[LocationViewModel::class.java]
+        adapter.onItemClicked = { selectedLocation ->
+            GetLocationsHelper.navigateToLocationDetailFragment(parentFragmentManager, selectedLocation)
+        }
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             toggleProgressBar(isLoading)
         }
 
-        viewModel.destinations.observe(viewLifecycleOwner) { destinations ->
-            adapter.updateData(destinations)
+        //
 
+        viewModel.filteredLocation.observe(viewLifecycleOwner) { resorts ->
+            adapter.updateData(resorts)
         }
 
-        adapter.onItemClicked = { selectedLocation ->
-            GetLocationsHelper.navigateToLocationDetailFragment(parentFragmentManager, selectedLocation)
+        viewModel.districts.observe(viewLifecycleOwner) { districts ->
+            setupDistrictDropdown(districts)
         }
         setupSearch()
         setupToolbar()
@@ -55,6 +61,7 @@ class LocationFragment : Fragment() {
             override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
                 val query = charSequence.toString().trim()
                 viewModel.searchLocation(query)
+                binding.autoCompleteDistrict.text.clear()
             }
             override fun afterTextChanged(editable: Editable?) {}
         })
@@ -64,6 +71,23 @@ class LocationFragment : Fragment() {
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbarPlace)
         binding.toolbarPlace.setNavigationOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+    }
+    //
+    private fun setupDistrictDropdown(districts: List<String>) {
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            districts
+        )
+        binding.autoCompleteDistrict.setAdapter(adapter)
+
+        binding.autoCompleteDistrict.setOnItemClickListener { _, _, position, _ ->
+            val selectedDistrict = adapter.getItem(position)
+            selectedDistrict?.let {
+                viewModel.filterResortsByDistrict(it)
+                binding.searchLocations.text?.clear()
+            }
         }
     }
     private fun toggleProgressBar(isLoading: Boolean) {

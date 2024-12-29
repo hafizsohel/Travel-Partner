@@ -12,14 +12,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.travelpartner.adapter.CafeAdapter
-import com.example.travelpartner.adapter.RestaurantAdapter
 import com.example.travelpartner.databinding.FragmentCafeBinding
 import com.example.travelpartner.model.CafeModel
-import com.example.travelpartner.model.RestaurantModel
 import com.example.travelpartner.utils.GetCafesHelper
-import com.example.travelpartner.utils.GetRestaurantsHelper
 import com.example.travelpartner.viewmodel.CafeViewModel
-import com.example.travelpartner.viewmodel.ResortViewModel
 
 class CafeFragment : Fragment() {
     private lateinit var binding: FragmentCafeBinding
@@ -39,19 +35,16 @@ class CafeFragment : Fragment() {
         binding.cafeRecyclerView.adapter = cafeAdapter
 
         viewModel = ViewModelProvider(this)[CafeViewModel::class.java]
-       /* viewModel.districts.observe(viewLifecycleOwner) { districtList ->
-            setupDistrictDropdown(districtList)
-        }*/
-        //viewModel.fetchDistricts()
-
-
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             toggleProgressBar(isLoading)
         }
-        viewModel.cafe.observe(viewLifecycleOwner) { restaurant ->
-            cafeAdapter.updateData(restaurant)
+        viewModel.filteredCafe.observe(viewLifecycleOwner) { cafe ->
+            cafeAdapter.updateData(cafe)
         }
 
+        viewModel.districts.observe(viewLifecycleOwner) { districts ->
+            setupDistrictDropdown(districts)
+        }
         cafeAdapter.onItemClicked = { selectedLocation ->
             GetCafesHelper.navigateToCafeDetailFragment(
                 parentFragmentManager,
@@ -68,6 +61,7 @@ class CafeFragment : Fragment() {
             override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
                 val query = charSequence.toString().trim()
                 viewModel.searchCafe(query)
+                binding.autoCompleteDistrict.text.clear()
             }
             override fun afterTextChanged(editable: Editable?) {}
         })
@@ -80,6 +74,14 @@ class CafeFragment : Fragment() {
             districts
         )
         binding.autoCompleteDistrict.setAdapter(adapter)
+
+        binding.autoCompleteDistrict.setOnItemClickListener { _, _, position, _ ->
+            val selectedDistrict = adapter.getItem(position)
+            selectedDistrict?.let {
+                viewModel.filterCafesByDistrict(it)
+                binding.searchCafe.text?.clear()
+            }
+        }
     }
     private fun setupToolbar() {
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbarCafe)

@@ -8,6 +8,7 @@ data class ResortModel(
     val phone: String = "",
     val rating: String = "",
     val imageUrl: String = "",
-    val bn_desc: String = ""
+    val bn_desc: String = "",
+    val district: String = ""
 )
 
