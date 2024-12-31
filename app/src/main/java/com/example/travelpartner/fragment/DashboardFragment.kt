@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.travelpartner.R
 import com.example.travelpartner.adapter.DestinationAdapter
+import com.example.travelpartner.adapter.OptionListsAdapter
 import com.example.travelpartner.utils.GetLocationsHelper
 import com.example.travelpartner.application.GridSpacingItemDecoration
 import com.example.travelpartner.model.LocationModel
@@ -78,6 +79,7 @@ class DashboardFragment : Fragment() {
         binding.progressBar1.visibility = View.VISIBLE
         val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
 
+
         binding.btnPlaces.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.FrameLayoutID, LocationFragment())
@@ -123,6 +125,7 @@ class DashboardFragment : Fragment() {
         //nav_drawer
         val dashboardLayout = binding.root.findViewById<LinearLayout>(R.id.dashboard_Id)
         val contactLayout = binding.root.findViewById<LinearLayout>(R.id.contact_Id)
+        val aboutLayout = binding.root.findViewById<LinearLayout>(R.id.about_Us)
 
         dashboardLayout.setOnClickListener {
             parentFragmentManager.beginTransaction()
@@ -134,6 +137,13 @@ class DashboardFragment : Fragment() {
         contactLayout.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.FrameLayoutID, ContactFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
+        aboutLayout.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.FrameLayoutID, AboutUsFragment())
                 .addToBackStack(null)
                 .commit()
         }
@@ -214,6 +224,7 @@ class DashboardFragment : Fragment() {
     }
 
     private fun FetchAllLocation() {
+        // Fetch data from Firebase
         binding.progressBar1.visibility = View.VISIBLE
         val databaseReference = FirebaseDatabase.getInstance().getReference("locations")
         databaseReference.addValueEventListener(object : ValueEventListener {
@@ -240,24 +251,27 @@ class DashboardFragment : Fragment() {
     }
 
     private fun scrollNoticeBar() {
-        noticeBar.post {
-            val scrollWidth = noticeBar.width - noticeScrollView.width
+        val scrollWidth = noticeBar.width / 2
 
-            if (scrollWidth > 0) {
-                val animator = ObjectAnimator.ofInt(
-                    noticeScrollView,
-                    "scrollX",
-                    0,
-                    scrollWidth
-                ).apply {
-                    duration = 20000
-                    repeatCount = ObjectAnimator.INFINITE
-                    interpolator = null
-                    start()
+        if (scrollWidth > 0) {
+            val animator = ObjectAnimator.ofInt(
+                noticeScrollView,
+                "scrollX",
+                0,
+                scrollWidth
+            ).apply {
+                duration = 15000
+                repeatCount = ObjectAnimator.INFINITE
+                interpolator = null
+                addUpdateListener {
+                    if (noticeScrollView.scrollX >= scrollWidth) {
+                        noticeScrollView.scrollTo(0, 0)
+                    }
                 }
-            } else {
-                noticeBar.postDelayed({ scrollNoticeBar() }, 100)
+                start()
             }
+        } else {
+            noticeScrollView.postDelayed({ scrollNoticeBar() }, 100)
         }
     }
 }

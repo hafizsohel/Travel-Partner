@@ -21,20 +21,17 @@ class ContactFragment : Fragment() {
     ): View? {
         binding = FragmentContactBinding.inflate(inflater, container, false)
 
-        // Setup Toolbar
         val toolbar = binding.toolbarContact as Toolbar
         toolbar.setNavigationOnClickListener {
             requireActivity().onBackPressed()
         }
 
-        // Call Button
         binding.buttonCall.setOnClickListener {
             val phoneNumber = "tel:+8801773642161"
             val intent = Intent(Intent.ACTION_DIAL, Uri.parse(phoneNumber))
             startActivity(intent)
         }
 
-        // Email Button
         binding.buttonEmail.setOnClickListener {
             val email = "sohel.hafizurrahman@gmail.com"
             val intent = Intent(Intent.ACTION_SENDTO).apply {
@@ -42,14 +39,6 @@ class ContactFragment : Fragment() {
             }
             startActivity(intent)
         }
-
-        // Location Button
-     /*   binding.buttonLocation.setOnClickListener {
-            val locationUri = Uri.parse("geo:23.784109450114283,90.42554424263183?q=23.784109450114283,90.42554424263183(Suffix+IT)")
-            val mapIntent = Intent(Intent.ACTION_VIEW, locationUri)
-            mapIntent.setPackage("com.google.android.apps.maps")
-            startActivity(mapIntent)
-        }*/
 
         return binding.root
     }

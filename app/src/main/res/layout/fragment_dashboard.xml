@@ -243,7 +243,6 @@
                                     android:textColor="@color/black"
                                     android:textStyle="bold" />
                             </LinearLayout>
-
                         </GridLayout>
                         <RelativeLayout
                             android:layout_width="wrap_content"
@@ -317,6 +316,11 @@
                     android:layout_gravity="start" />
 
             </RelativeLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewOptions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
         </androidx.drawerlayout.widget.DrawerLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
