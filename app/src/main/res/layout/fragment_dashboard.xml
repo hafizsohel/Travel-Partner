@@ -83,7 +83,7 @@
                                 android:padding="10dp"
                                 android:background="@drawable/notice_bar_background"
                                 android:backgroundTint="@color/charcoal_light"
-                                android:text="Enjoy exploring the beauty of Bangladesh! Discover destinations, nature, and cultural wonders across the country!"
+                                android:text="@string/noticeText"
                                 android:textColor="@color/yellow"
                                 android:textSize="16sp" />
 
