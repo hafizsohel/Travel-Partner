@@ -1,60 +1,102 @@
 package com.example.travelpartner.fragment
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.travelpartner.R
+import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.travelpartner.adapter.RiverAdapter
+import com.example.travelpartner.databinding.FragmentRiverBinding
+import com.example.travelpartner.model.RiverModel
+import com.example.travelpartner.utils.GetRiversHelper
+import com.example.travelpartner.viewmodel.RiverViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [RiverFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class RiverFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var binding: FragmentRiverBinding
+    private lateinit var viewModel: RiverViewModel
+    private lateinit var riverAdapter: RiverAdapter
+    private val riverList = mutableListOf<RiverModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_river, container, false)
+        binding = FragmentRiverBinding.inflate(layoutInflater)
+        setupToolbar()
+
+        riverAdapter = RiverAdapter(requireContext(), riverList)
+        binding.riverRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.riverRecyclerView.adapter = riverAdapter
+
+        viewModel = ViewModelProvider(this)[RiverViewModel::class.java]
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            toggleProgressBar(isLoading)
+        }
+        viewModel.filteredRiver.observe(viewLifecycleOwner) { river ->
+            riverAdapter.updateData(river)
+        }
+
+        viewModel.districts.observe(viewLifecycleOwner) { districts ->
+            setupDistrictDropdown(districts)
+        }
+        riverAdapter.onItemClicked = { selectedLocation ->
+            GetRiversHelper.navigateToRiverDetailFragment(
+                parentFragmentManager,
+                selectedLocation
+            )
+        }
+        setupRiver()
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment RiverFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            RiverFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    private fun setupRiver() {
+        binding.searchRiver.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = charSequence.toString().trim()
+                viewModel.searchRiver(query)
+                binding.autoCompleteDistrict.text.clear()
             }
+            override fun afterTextChanged(editable: Editable?) {}
+        })
+    }
+
+    private fun setupDistrictDropdown(districts: List<String>) {
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            districts
+        )
+        binding.autoCompleteDistrict.setAdapter(adapter)
+        binding.autoCompleteDistrict.setOnItemClickListener { _, _, position, _ ->
+            val selectedDistrict = adapter.getItem(position)
+            selectedDistrict?.let {
+                viewModel.filterRiversByDistrict(it)
+                binding.searchRiver.text?.clear()
+            }
+        }
+    }
+    private fun setupToolbar() {
+        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbarRiver)
+        binding.toolbarRiver.setNavigationOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+    }
+
+    private fun toggleProgressBar(isLoading: Boolean) {
+        if (isLoading) {
+            binding.riverProgressBar.visibility = View.VISIBLE
+            binding.riverRecyclerView.visibility = View.GONE
+        } else {
+            binding.riverProgressBar.visibility = View.GONE
+            binding.riverRecyclerView.visibility = View.VISIBLE
+        }
     }
 }

@@ -34,8 +34,8 @@ class CafeViewModel : ViewModel() {
         if (query.isEmpty()) {
             _filteredCafe.value = _cafe.value
         } else {
-            _filteredCafe.value = _cafe.value?.filter { resort ->
-                resort.name?.contains(query, ignoreCase = true) == true
+            _filteredCafe.value = _cafe.value?.filter { cafe ->
+                cafe.name?.contains(query, ignoreCase = true) == true
             }
         }
     }

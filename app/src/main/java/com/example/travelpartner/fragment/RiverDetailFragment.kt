@@ -11,26 +11,22 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import com.example.travelpartner.R
-import com.example.travelpartner.adapter.CafeAdapter
-import com.example.travelpartner.adapter.RestaurantAdapter
-import com.example.travelpartner.databinding.FragmentCafeDetailBinding
-import com.example.travelpartner.databinding.FragmentRestaurantDetailBinding
-import com.example.travelpartner.model.CafeModel
-import com.example.travelpartner.model.RestaurantModel
+import com.example.travelpartner.adapter.RiverAdapter
+import com.example.travelpartner.databinding.FragmentRiverDetailBinding
+import com.example.travelpartner.model.RiverModel
 
-class CafeDetailFragment : Fragment() {
-    private lateinit var binding: FragmentCafeDetailBinding
-    private val cafeList = mutableListOf<CafeModel>()
-    private lateinit var cafeAdapter: CafeAdapter
+class RiverDetailFragment : Fragment() {
+    private lateinit var binding: FragmentRiverDetailBinding
+    private val riverList = mutableListOf<RiverModel>()
+    private lateinit var riverAdapter: RiverAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentCafeDetailBinding.inflate(layoutInflater)
-        cafeAdapter = CafeAdapter(requireContext(), cafeList)
-        cafeAdapter = cafeAdapter
+        binding = FragmentRiverDetailBinding.inflate(layoutInflater)
+        riverAdapter = RiverAdapter(requireContext(), riverList)
+        riverAdapter = riverAdapter
 
         val name = arguments?.getString("name") ?: "No Name"
         val imageUrl = arguments?.getString("imageUrl") ?: ""
@@ -39,15 +35,15 @@ class CafeDetailFragment : Fragment() {
         val latitude = arguments?.getString("latitude") ?: "No Latitude"
         val longitude = arguments?.getString("longitude") ?: "No Longitude"
 
-        binding.cafeTitle.text = name
-        binding.cafeDescription.text = description
-        binding.cafeRating.text = rating
-        Glide.with(requireContext()).load(imageUrl).into(binding.cafeImage)
+        binding.riverTitle.text = name
+        binding.riverDescription.text = description
+        binding.riverRating.text = rating
+        Glide.with(requireContext()).load(imageUrl).into(binding.riverImage)
 
         val locationCoordinates = "Lat: $latitude, Long: $longitude"
-        binding.btnSeeCafeLocation.text = "See Location"
+        binding.btnSeeRiverLocation.text = "See Location"
 
-        binding.btnSeeCafeLocation.setOnClickListener {
+        binding.btnSeeRiverLocation.setOnClickListener {
             val buttonText = locationCoordinates
             val regex = "Lat:\\s*([\\d.-]+),\\s*Long:\\s*([\\d.-]+)".toRegex()
             val matchResult = regex.find(buttonText)
@@ -80,8 +76,8 @@ class CafeDetailFragment : Fragment() {
     }
 
     private fun setupToolbar() {
-        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbarCafeDetails)
-        binding.toolbarCafeDetails.setNavigationOnClickListener {
+        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbarRiverDetails)
+        binding.toolbarRiverDetails.setNavigationOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
     }

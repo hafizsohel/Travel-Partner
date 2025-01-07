@@ -12,7 +12,6 @@ import com.example.travelpartner.databinding.FragmentOthersBinding
 
 class OthersFragment : Fragment() {
     private lateinit var binding:FragmentOthersBinding
-    private lateinit var optionListsAdapter: OptionListsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -20,29 +19,9 @@ class OthersFragment : Fragment() {
     ): View? {
         binding = FragmentOthersBinding.inflate(layoutInflater)
 
-
-        val options = listOf("River", "Bil", "Forest", "Mountain")
-
-        // RecyclerView setup
-        val adapter = OptionListsAdapter(options) { selectedOption ->
-            navigateToOptionsFragment(selectedOption)
-        }
-        binding.recyclerViewOptions.adapter = adapter
         binding.recyclerViewOptions.layoutManager = LinearLayoutManager(requireContext())
 
 
         return binding.root
-    }
-    private fun navigateToOptionsFragment(option: String) {
-        val fragment = when (option) {
-            "River" -> RiverFragment()
-            "Bil" -> RiverFragment.newInstance("Bil", "ExtraDataForBil")
-            else -> RiverFragment.newInstance(option, "DefaultExtraData")
-        }
-
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.FrameLayoutID, fragment)
-            .addToBackStack(null)
-            .commit()
     }
 }

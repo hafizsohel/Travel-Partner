@@ -4,10 +4,12 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentManager
 import com.example.travelpartner.R
 import com.example.travelpartner.fragment.CafeDetailFragment
+import com.example.travelpartner.fragment.RiverDetailFragment
 import com.example.travelpartner.model.CafeModel
+import com.example.travelpartner.model.RiverModel
 
-object GetCafesHelper {
-    fun navigateToCafeDetailFragment(fragmentManager: FragmentManager, selectedLocation: CafeModel) {
+object GetRiversHelper {
+    fun navigateToRiverDetailFragment(fragmentManager: FragmentManager, selectedLocation: RiverModel) {
         val bundle = Bundle().apply {
             putString("name", selectedLocation.name)
             putString("imageUrl", selectedLocation.imageUrl)
@@ -16,7 +18,7 @@ object GetCafesHelper {
             putString("latitude", selectedLocation.latitude)
             putString("longitude", selectedLocation.longitude)
         }
-        val fragment = CafeDetailFragment().apply {
+        val fragment = RiverDetailFragment().apply {
             arguments = bundle
         }
         fragmentManager.beginTransaction()

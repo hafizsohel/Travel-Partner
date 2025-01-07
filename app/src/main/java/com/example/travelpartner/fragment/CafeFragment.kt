@@ -27,7 +27,7 @@ class CafeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentCafeBinding.inflate(inflater, container, false)
+        binding = FragmentCafeBinding.inflate(layoutInflater)
         setupToolbar()
 
         cafeAdapter = CafeAdapter(requireContext(), cafeList)

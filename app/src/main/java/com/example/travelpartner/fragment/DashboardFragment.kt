@@ -1,6 +1,7 @@
 package com.example.travelpartner.fragment
 
 import android.animation.ObjectAnimator
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,8 +17,11 @@ import com.google.firebase.firestore.FirebaseFirestore
 import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.PopupMenu
+import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -120,6 +124,36 @@ class DashboardFragment : Fragment() {
                 .replace(R.id.FrameLayoutID, SeeLocationFragment())
                 .addToBackStack(null)
                 .commit()
+        }
+
+        binding.btnOthers.setOnClickListener {
+            val inflater = LayoutInflater.from(requireContext())
+            val view = inflater.inflate(R.layout.custom_popup_menu, null)
+            val popupWindow = PopupWindow(view, 400, 400)
+            popupWindow.isOutsideTouchable = true
+
+            val riverTextView = view.findViewById<TextView>(R.id.river)
+            val lakeTextView = view.findViewById<TextView>(R.id.lake)
+            val parkTextView = view.findViewById<TextView>(R.id.park)
+
+            riverTextView.setOnClickListener {
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.FrameLayoutID, RiverFragment())
+                    .addToBackStack(null)
+                    .commit()
+                popupWindow.dismiss()
+            }
+
+            lakeTextView.setOnClickListener {
+                Toast.makeText(requireContext(), "Lake clicked!", Toast.LENGTH_SHORT).show()
+                popupWindow.dismiss()
+            }
+
+            parkTextView.setOnClickListener {
+                Toast.makeText(requireContext(), "Park clicked!", Toast.LENGTH_SHORT).show()
+                popupWindow.dismiss()
+            }
+            popupWindow.showAsDropDown(binding.btnOthers)
         }
 
         //nav_drawer
@@ -247,7 +281,7 @@ class DashboardFragment : Fragment() {
 
     private fun duplicateTextContent() {
         val textContent = noticeBar.text.toString()
-        noticeBar.text = "$textContent    $textContent"
+        noticeBar.text = "$textContent $textContent"
     }
 
     private fun scrollNoticeBar() {
