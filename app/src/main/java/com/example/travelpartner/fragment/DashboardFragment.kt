@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +21,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.PopupWindow
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -29,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.travelpartner.R
 import com.example.travelpartner.adapter.DestinationAdapter
 import com.example.travelpartner.adapter.OptionListsAdapter
+import com.example.travelpartner.adapter.OthersSpinnerAdapter
 import com.example.travelpartner.utils.GetLocationsHelper
 import com.example.travelpartner.application.GridSpacingItemDecoration
 import com.example.travelpartner.model.LocationModel
@@ -51,6 +55,7 @@ class DashboardFragment : Fragment() {
     private lateinit var noticeBar: TextView
     private lateinit var noticeScrollView: HorizontalScrollView
     private lateinit var noticeViewModel: NoticeViewModel
+    private lateinit var othersSpinnerAdapter: OthersSpinnerAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -125,6 +130,33 @@ class DashboardFragment : Fragment() {
                 .addToBackStack(null)
                 .commit()
         }
+        val spinnerOthers: Spinner = binding.root.findViewById(R.id.spinnerOthers)
+
+        val items = listOf("Item 1", "Item 2", "Item 3")
+        val adapter = ArrayAdapter(
+            requireContext(),
+            R.layout.spinner_item,
+            items
+        )
+        adapter.setDropDownViewResource(R.layout.spinner_item)
+        spinnerOthers.adapter = adapter
+
+        spinnerOthers.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val selectedItem = items[position]
+                Toast.makeText(requireContext(), "Selected: $selectedItem", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
+
+
 
         binding.btnOthers.setOnClickListener {
             val inflater = LayoutInflater.from(requireContext())
@@ -196,6 +228,7 @@ class DashboardFragment : Fragment() {
 
         return binding.root
     }
+
 
     private fun showSlider() {
         viewLifecycleOwner.lifecycleScope.launch {
