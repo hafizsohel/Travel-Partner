@@ -1,3 +1,4 @@
+/*
 package com.example.travelpartner.adapter
 
 import android.content.Context
@@ -47,3 +48,4 @@ class OthersSpinnerAdapter(
         return view
     }
 }
+*/

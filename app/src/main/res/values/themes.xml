@@ -14,9 +14,5 @@
         <item name="android:popupBackground">@android:color/white</item>
         <item name="android:dropDownWidth">match_parent</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:padding">12dp</item>
     </style>
-
-
-
 </resources>

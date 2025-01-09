@@ -31,8 +31,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.travelpartner.R
 import com.example.travelpartner.adapter.DestinationAdapter
-import com.example.travelpartner.adapter.OptionListsAdapter
-import com.example.travelpartner.adapter.OthersSpinnerAdapter
 import com.example.travelpartner.utils.GetLocationsHelper
 import com.example.travelpartner.application.GridSpacingItemDecoration
 import com.example.travelpartner.model.LocationModel
@@ -55,7 +53,7 @@ class DashboardFragment : Fragment() {
     private lateinit var noticeBar: TextView
     private lateinit var noticeScrollView: HorizontalScrollView
     private lateinit var noticeViewModel: NoticeViewModel
-    private lateinit var othersSpinnerAdapter: OthersSpinnerAdapter
+   // private lateinit var othersSpinnerAdapter: OthersSpinnerAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -132,15 +130,16 @@ class DashboardFragment : Fragment() {
         }
         val spinnerOthers: Spinner = binding.root.findViewById(R.id.spinnerOthers)
 
-        val items = listOf("Item 1", "Item 2", "Item 3")
         val adapter = ArrayAdapter(
             requireContext(),
-            R.layout.spinner_item,
-            items
+            R.layout.spinner_item, // Layout for the selected item
+            listOf("Option 1", "Option 2", "Option 3")
         )
-        adapter.setDropDownViewResource(R.layout.spinner_item)
+
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item) // Layout for dropdown items
         spinnerOthers.adapter = adapter
 
+        // Handle item selection
         spinnerOthers.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -148,14 +147,13 @@ class DashboardFragment : Fragment() {
                 position: Int,
                 id: Long
             ) {
-                val selectedItem = items[position]
-                Toast.makeText(requireContext(), "Selected: $selectedItem", Toast.LENGTH_SHORT).show()
+               // val selectedItem = items[position]
+                Toast.makeText(requireContext(), "Selected: $", Toast.LENGTH_SHORT).show()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
         }
-
 
 
         binding.btnOthers.setOnClickListener {
