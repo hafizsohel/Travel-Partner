@@ -3,12 +3,14 @@ package com.example.travelpartner.fragment
 import android.animation.ObjectAnimator
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,6 +37,7 @@ import com.example.travelpartner.utils.GetLocationsHelper
 import com.example.travelpartner.application.GridSpacingItemDecoration
 import com.example.travelpartner.model.LocationModel
 import com.example.travelpartner.viewmodel.NoticeViewModel
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -53,7 +56,8 @@ class DashboardFragment : Fragment() {
     private lateinit var noticeBar: TextView
     private lateinit var noticeScrollView: HorizontalScrollView
     private lateinit var noticeViewModel: NoticeViewModel
-   // private lateinit var othersSpinnerAdapter: OthersSpinnerAdapter
+    private lateinit var spinnerOthers: AutoCompleteTextView
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -128,63 +132,118 @@ class DashboardFragment : Fragment() {
                 .addToBackStack(null)
                 .commit()
         }
-        val spinnerOthers: Spinner = binding.root.findViewById(R.id.spinnerOthers)
+        //val spinnerOthers: Spinner = binding.root.findViewById(R.id.spinnerOthers)
+      /*  val spinnerOthers: AutoCompleteTextView = binding.root.findViewById(R.id.spinnerOthers)
 
-        val adapter = ArrayAdapter(
-            requireContext(),
-            R.layout.spinner_item, // Layout for the selected item
-            listOf("Option 1", "Option 2", "Option 3")
-        )
+        val options = listOf("River", "Lake", "Park")
 
-        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item) // Layout for dropdown items
-        spinnerOthers.adapter = adapter
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, options)
+        spinnerOthers.setAdapter(adapter)
 
-        // Handle item selection
-        spinnerOthers.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-               // val selectedItem = items[position]
-                Toast.makeText(requireContext(), "Selected: $", Toast.LENGTH_SHORT).show()
+        spinnerOthers.setOnClickListener {
+            spinnerOthers.showDropDown()
+        }
+
+        spinnerOthers.setOnItemClickListener { parent, view, position, id ->
+            val selectedOption = options[position]
+            when (selectedOption) {
+                "River" -> {
+                    val riverFragment = RiverFragment()
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.FrameLayoutID, riverFragment)
+                        .addToBackStack(null)
+                        .commit()
+                    //Toast.makeText(requireContext(), "Selected: $selectedOption", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }*/
+
+        /*val spinnerOthers: AutoCompleteTextView = binding.root.findViewById(R.id.spinnerOthers)
+
+        val options = listOf("River", "Lake", "Park")
+
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, options)
+        spinnerOthers.setAdapter(adapter)
+
+        binding.spinnerOthers.setOnClickListener {
+            spinnerOthers.showDropDown()
+
+        }
+
+        spinnerOthers.setOnItemClickListener { parent, view, position, id ->
+            val selectedOption = options[position]
+            when (selectedOption) {
+                "River" -> {
+                    val riverFragment = RiverFragment()
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.FrameLayoutID, riverFragment)
+                        .addToBackStack(null)
+                        .commit()
+                }
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
+        }*/
+
+
+        spinnerOthers = binding.root.findViewById(R.id.spinnerOthers)
+
+        val options = listOf("River", "Lake", "Park")
+
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, options)
+        spinnerOthers.setAdapter(adapter)
+
+        binding.spinnerOthers.setOnClickListener {
+            spinnerOthers.showDropDown()
+        }
+
+        spinnerOthers.setOnItemClickListener { parent, view, position, id ->
+            val selectedOption = options[position]
+            when (selectedOption) {
+                "River" -> {
+                    val riverFragment = RiverFragment()
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.FrameLayoutID, riverFragment)
+                        .addToBackStack(null)
+                        .commit()
+
+                }
             }
         }
 
 
-        binding.btnOthers.setOnClickListener {
-            val inflater = LayoutInflater.from(requireContext())
-            val view = inflater.inflate(R.layout.custom_popup_menu, null)
-            val popupWindow = PopupWindow(view, 400, 400)
-            popupWindow.isOutsideTouchable = true
 
-            val riverTextView = view.findViewById<TextView>(R.id.river)
-            val lakeTextView = view.findViewById<TextView>(R.id.lake)
-            val parkTextView = view.findViewById<TextView>(R.id.park)
 
-            riverTextView.setOnClickListener {
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.FrameLayoutID, RiverFragment())
-                    .addToBackStack(null)
-                    .commit()
-                popupWindow.dismiss()
-            }
 
-            lakeTextView.setOnClickListener {
-                Toast.makeText(requireContext(), "Lake clicked!", Toast.LENGTH_SHORT).show()
-                popupWindow.dismiss()
-            }
 
-            parkTextView.setOnClickListener {
-                Toast.makeText(requireContext(), "Park clicked!", Toast.LENGTH_SHORT).show()
-                popupWindow.dismiss()
-            }
-            popupWindow.showAsDropDown(binding.btnOthers)
-        }
+        /*  binding.btnOthers.setOnClickListener {
+              val inflater = LayoutInflater.from(requireContext())
+              val view = inflater.inflate(R.layout.custom_popup_menu, null)
+              val popupWindow = PopupWindow(view, 400, 400)
+              popupWindow.isOutsideTouchable = true
+
+              val riverTextView = view.findViewById<TextView>(R.id.river)
+              val lakeTextView = view.findViewById<TextView>(R.id.lake)
+              val parkTextView = view.findViewById<TextView>(R.id.park)
+
+              riverTextView.setOnClickListener {
+                  parentFragmentManager.beginTransaction()
+                      .replace(R.id.FrameLayoutID, RiverFragment())
+                      .addToBackStack(null)
+                      .commit()
+                  popupWindow.dismiss()
+              }
+
+              lakeTextView.setOnClickListener {
+                  Toast.makeText(requireContext(), "Lake clicked!", Toast.LENGTH_SHORT).show()
+                  popupWindow.dismiss()
+              }
+
+              parkTextView.setOnClickListener {
+                  Toast.makeText(requireContext(), "Park clicked!", Toast.LENGTH_SHORT).show()
+                  popupWindow.dismiss()
+              }
+              popupWindow.showAsDropDown(binding.btnOthers)
+          }*/
 
         //nav_drawer
         val dashboardLayout = binding.root.findViewById<LinearLayout>(R.id.dashboard_Id)
@@ -225,8 +284,8 @@ class DashboardFragment : Fragment() {
         }
 
         return binding.root
-    }
 
+    }
 
     private fun showSlider() {
         viewLifecycleOwner.lifecycleScope.launch {

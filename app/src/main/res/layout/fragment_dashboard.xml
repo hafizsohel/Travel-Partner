@@ -31,6 +31,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
+                    android:clipToPadding="false"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -230,18 +231,21 @@
                                 android:orientation="vertical"
                                 android:padding="8dp">
 
-                                <Spinner
+                                <AutoCompleteTextView
                                     android:id="@+id/spinnerOthers"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:spinnerMode="dropdown"
+                                    android:text="Others"
+                                    android:gravity="center"
+                                    android:textColor="@color/charcoal"
+                                    android:textStyle="bold"
+                                    android:focusable="false"
+                                    android:cursorVisible="false"
+                                    android:padding="6dp"
+                                    android:inputType="none"
+                                    android:drawableEnd="@drawable/more"
                                     android:background="@drawable/spinner_background"
-                                    android:popupBackground="@android:color/white"
-                                    android:padding="12dp"
-                                    android:gravity="center_vertical"
-                                    android:theme="@style/CustomSpinnerStyle" />
-
-
+                                    android:popupBackground="@android:color/white" />
                             </LinearLayout>
 
                         </GridLayout>
